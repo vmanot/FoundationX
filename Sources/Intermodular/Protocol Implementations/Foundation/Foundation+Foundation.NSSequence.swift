@@ -1,0 +1,27 @@
+//
+// Copyright (c) Vatsal Manot
+//
+
+import Foundation
+import Swallow
+import Swift
+
+extension NSArray: NSSequence {
+    
+}
+
+extension NSDictionary: NSSequence {
+    
+}
+
+extension NSHashTable: NSSequence {
+    
+}
+
+extension NSOrderedSet: NSSequence {
+    
+}
+
+extension NSSet: NSSequence {
+    
+}
