@@ -36,6 +36,24 @@ extension Data {
 }
 
 extension Data {
+    public struct HexEncodingOptions: OptionSet {
+        public let rawValue: Int
+        
+        public static let upperCase = HexEncodingOptions(rawValue: 1 << 0)
+        
+        public init(rawValue: Int) {
+            self.rawValue = rawValue
+        }
+    }
+    
+    public func hexEncodedString(options: HexEncodingOptions = []) -> String {
+        map {
+            String(format: options.contains(.upperCase) ? "%02hhX" : "%02hhx", $0)
+        }.joined()
+    }
+}
+
+extension Data {
     public init(keyedArchiveFrom encodeImpl: (NSCoder) -> (), requiringSecureCoding: Bool = true) {
         let archiver = NSModernKeyedArchiver(requiringSecureCoding: requiringSecureCoding)
         

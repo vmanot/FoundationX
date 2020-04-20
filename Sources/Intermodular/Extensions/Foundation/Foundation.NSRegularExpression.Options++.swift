@@ -27,7 +27,7 @@ extension NSRegularExpression.Options {
                 break
         }
         
-        return impossible()
+        return Never.materialize(reason: .impossible)
     }
     
     public init?(modeModifier: Character) {

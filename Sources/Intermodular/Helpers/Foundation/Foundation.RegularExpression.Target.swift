@@ -112,7 +112,7 @@ extension RegularExpression {
     public func match(oneOf strings: String...) -> RegularExpression {
         return match(.oneOf(strings))
     }
-
+    
     public func capture(oneOf strings: String...) -> RegularExpression {
         return capture(.oneOf(strings))
     }
@@ -123,7 +123,7 @@ extension RegularExpression {
                 return add("(?:[\(value.sanitizedForRegularExpression)])")
             case .characterSet(let value):
                 return match(anyOf: .string(String(value.value)))
-                
+            
             default:
                 _ = TODO.unimplemented
         }
@@ -141,13 +141,13 @@ extension RegularExpression {
 extension RegularExpression {
     public struct TargetSet: ImplementationForwardingWrapper, Collection {
         public typealias Value = [RegularExpression.Target]
-
+        
         public typealias Element = Value.Element
         public typealias Index = Value.Index
         public typealias Iterator = Value.Iterator
         
         public let value: Value
-
+        
         public init(_ value: Value) {
             self.value = value
         }

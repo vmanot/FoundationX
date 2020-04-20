@@ -18,9 +18,9 @@ extension Bundle {
         }
 
         var info = Dl_info(
-            dli_fname: "",
+            dli_fname: nil,
             dli_fbase: nil,
-            dli_sname: "",
+            dli_sname: nil,
             dli_saddr: nil
         )
 
