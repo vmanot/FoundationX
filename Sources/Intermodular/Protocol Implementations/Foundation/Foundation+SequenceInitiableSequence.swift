@@ -6,7 +6,7 @@ import Foundation
 import Swallow
 
 extension Data: SequenceInitiableSequence {
-
+    
 }
 
 extension NSString {

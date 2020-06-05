@@ -18,7 +18,7 @@ extension Decimal: FloatingPointInitiable {
     public init(_ value: Float) {
         self.init(value as NSNumber)
     }
-
+    
     public init(_ value: CGFloat) {
         self.init(CGFloat.NativeType(value))
     }

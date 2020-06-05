@@ -11,13 +11,13 @@ extension Decimal: Continuous, Signed, Number {
     public var isNegative: Bool {
         return _isNegative.toBool()
     }
-
+    
     @inlinable
     @inline(__always)
     public init(uncheckedOpaqueValue value: opaque_Number) {
         self = value.toDecimal()
     }
-
+    
     @inlinable
     @inline(__always)
     public init<N: opaque_Number>(unchecked value: N) {

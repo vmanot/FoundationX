@@ -10,7 +10,7 @@ extension Data: ExtensibleSequence {
     public typealias ElementsInsertResult = Void
     public typealias ElementAppendResult = Void
     public typealias ElementsAppendResult = Void
-
+    
     public mutating func insert(_ newElement: Element) {
         insert(contentsOf: CollectionOfOne(newElement))
     }
@@ -20,11 +20,11 @@ extension Data: ExtensibleSequence {
         
         replaceSubrange(0..<0, with: newElements)
     }
-
+    
     public mutating func append(_ newElement: Element) {
         append(contentsOf: newElement.readOnly.unsafeRawBytes)
     }
-        
+    
     public mutating func append<BP: InitiableBufferPointer>(contentsOf newElements: BP) where Element == BP.Element {
         newElements.baseAddress.collapse({ self.append(reinterpretCast($0), count: .init(newElements.count)) })
     }
@@ -35,7 +35,7 @@ extension NSMutableArray: ExtensibleSequence {
     public typealias ElementsInsertResult = Void
     public typealias ElementAppendResult = Void
     public typealias ElementsAppendResult = Void
-
+    
     @objc public dynamic func insert(_ newElement: Element) {
         insert(newElement, at: 0)
     }

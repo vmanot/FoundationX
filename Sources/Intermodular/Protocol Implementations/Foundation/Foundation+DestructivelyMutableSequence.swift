@@ -32,7 +32,7 @@ extension NSMutableData: MutableSequence {
 }
 
 extension NSMutableSet: DestructivelyMutableSequence {
-    public func forEach<T>(mutating iterator: ((inout Element) throws -> T)) rethrows {        
+    public func forEach<T>(mutating iterator: ((inout Element) throws -> T)) rethrows {
         try forEach(mutating: { (element: inout Element!) in try iterator(&element) })
     }
     

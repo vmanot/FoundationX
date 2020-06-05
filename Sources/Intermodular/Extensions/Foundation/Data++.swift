@@ -55,7 +55,7 @@ extension Data {
 
 extension Data {
     public init(keyedArchiveFrom encodeImpl: (NSCoder) -> (), requiringSecureCoding: Bool = true) {
-        let archiver = NSModernKeyedArchiver(requiringSecureCoding: requiringSecureCoding)
+        let archiver = NSKeyedArchiver(requiringSecureCoding: requiringSecureCoding)
         
         encodeImpl(archiver)
         

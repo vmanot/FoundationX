@@ -33,7 +33,7 @@ extension NSMutableData {
             }
         }
     }
-
+    
     public subscript(_position position: Index) -> Byte {
         get {
             return UnsafeRawBufferPointer(unmanaged: self)[position]

@@ -4,7 +4,8 @@
 
 import Foundation
 import Swallow
+import Swift
 
-extension NSObject: ReferenceType {
-
+extension Data: ExpressibleByArrayLiteral {
+    
 }

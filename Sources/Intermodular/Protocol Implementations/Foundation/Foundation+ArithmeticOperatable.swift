@@ -16,7 +16,7 @@ extension CharacterSet: AdditionOperatable {
 }
 
 extension Data: AdditionOperatable {
-
+    
 }
 
 extension Decimal: ArithmeticOperatable {
