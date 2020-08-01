@@ -54,13 +54,7 @@ extension Data {
 }
 
 extension Data {
-    public init(keyedArchiveFrom encodeImpl: (NSCoder) -> (), requiringSecureCoding: Bool = true) {
-        let archiver = NSKeyedArchiver(requiringSecureCoding: requiringSecureCoding)
-        
-        encodeImpl(archiver)
-        
-        archiver.finishEncoding()
-        
-        self = archiver.encodedData
+    public func toString(encoding: String.Encoding = .utf8) throws -> String {
+        try String(data: self, encoding: encoding).unwrap()
     }
 }

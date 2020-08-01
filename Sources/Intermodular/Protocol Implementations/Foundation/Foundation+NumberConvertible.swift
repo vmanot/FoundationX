@@ -27,15 +27,6 @@ extension Decimal: NumberConvertible {
         return .init(truncating: self as NSNumber)
     }
     
-    #if os(macOS)
-    
-    @inlinable
-    public func toFloat80() -> Float80 {
-        return .init(toDouble())
-    }
-    
-    #endif
-    
     @inlinable
     public func toInt() -> Int {
         return .init(truncating: self as NSNumber)

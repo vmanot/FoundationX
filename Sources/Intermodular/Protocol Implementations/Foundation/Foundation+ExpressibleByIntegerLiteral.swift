@@ -4,7 +4,6 @@
 
 import Foundation
 import Swallow
-import Swift
 
 extension IndexPath: ExpressibleByIntegerLiteral {
     public init(integerLiteral value: Int) {

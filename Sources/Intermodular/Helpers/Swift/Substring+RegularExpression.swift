@@ -4,7 +4,6 @@
 
 import Foundation
 import Swallow
-import Swift
 
 extension Substring {
     public func matches(_ expression: RegularExpression) -> Bool {

@@ -5,7 +5,6 @@
 import CoreFoundation
 import Foundation
 import Swallow
-import Swift
 
 extension NSMutableDictionary {
     @objc public dynamic class func mutableDictionaryUsingWeakReferences(withCapacity capacity: Int = 0) -> NSMutableDictionary {

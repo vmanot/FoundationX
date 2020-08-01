@@ -4,14 +4,13 @@
 
 import Foundation
 import Swallow
-import Swift
 
 extension Date {
     /// Convert this date to a `String` given a certain format.
     public func toString(dateFormat format: String) -> String {
-        DateFormatter().then {
-            $0.dateFormat = format
-        }.string(from: self)
+        DateFormatter()
+            .then({ $0.dateFormat = format })
+            .string(from: self)
     }
 }
 

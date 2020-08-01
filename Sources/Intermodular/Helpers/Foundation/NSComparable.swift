@@ -13,23 +13,23 @@ public protocol NSComparableReferenceConvertee: ReferenceConvertee {
     func compare(_ other: ReferenceConvertibleType) -> ComparisonResult
 }
 
-// MARK: - Implementation - 
+// MARK: - Implementation -
 
 extension NSComparable {
     public static func < (lhs: Self, rhs: Self) -> Bool {
-        return lhs.compare(rhs) == .orderedAscending
+        lhs.compare(rhs) == .orderedAscending
     }
-
+    
     public static func <= (lhs: Self, rhs: Self) -> Bool {
-        return lhs.compare(rhs) != .orderedDescending
+        lhs.compare(rhs) != .orderedDescending
     }
-
+    
     public static func > (lhs: Self, rhs: Self) -> Bool {
-        return lhs.compare(rhs) == .orderedDescending
+        lhs.compare(rhs) == .orderedDescending
     }
-
+    
     public static func >= (lhs: Self, rhs: Self) -> Bool {
-        return lhs.compare(rhs) != .orderedAscending
+        lhs.compare(rhs) != .orderedAscending
     }
 }
 

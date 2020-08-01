@@ -5,7 +5,6 @@
 import Darwin
 import Foundation
 import Swallow
-import Swift
 
 extension Bundle {
     private static let cache = NSCache<NSNumber, Bundle>()

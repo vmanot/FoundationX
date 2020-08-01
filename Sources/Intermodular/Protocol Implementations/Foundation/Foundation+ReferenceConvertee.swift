@@ -4,7 +4,6 @@
 
 import Foundation
 import Swallow
-import Swift
 
 #if os(macOS)
 

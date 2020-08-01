@@ -4,7 +4,6 @@
 
 import Foundation
 import Swallow
-import Swift
 
 extension NSDecimalNumber {
     public typealias Handler = NSDecimalNumberHandler

@@ -4,7 +4,6 @@
 
 import Foundation
 import Swallow
-import Swift
 
 extension CharacterSet: LosslessStringConvertible {
     public init(_ description: String) {

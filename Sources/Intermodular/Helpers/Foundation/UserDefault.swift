@@ -4,16 +4,15 @@
 
 import Foundation
 import Swallow
-import Swift
 
 @propertyWrapper
 public struct UserDefault<Value> {
     public let key: String
     public let defaultValue: Value
     public let defaults: UserDefaults
-
+    
     public init(
-        _ key: String,
+        key: String,
         defaultValue: Value,
         defaults: UserDefaults = .standard
     ) {
@@ -21,12 +20,22 @@ public struct UserDefault<Value> {
         self.defaultValue = defaultValue
         self.defaults = defaults
     }
-
+    
+    public init<T>(
+        key: String,
+        defaults: UserDefaults = .standard
+    ) where Value == Optional<T> {
+        self.init(key: key, defaultValue: .none, defaults: defaults)
+    }
+    
     public var wrappedValue: Value {
         get {
-            return defaults.object(forKey: key) as? Value ?? defaultValue
-        }
-        set {
+            if Value.self is AnyClass {
+                return defaults.object(forKey: key) as? Value ?? defaultValue
+            } else {
+                return defaults.value(forKey: key) as? Value ?? defaultValue
+            }
+        } set {
             defaults.set(newValue, forKey: key)
         }
     }

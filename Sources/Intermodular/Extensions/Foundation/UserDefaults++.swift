@@ -4,7 +4,6 @@
 
 import Foundation
 import Swallow
-import Swift
 
 extension UserDefaults {
     @objc public dynamic subscript(key: String) -> Any? {

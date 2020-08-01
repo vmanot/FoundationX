@@ -5,7 +5,6 @@
 import CoreFoundation
 import Foundation
 import Swallow
-import Swift
 
 extension NSMutableArray {
     public class func mutableArrayUsingWeakReferences(withCapicty capacity: Int = 0) -> NSMutableArray {
