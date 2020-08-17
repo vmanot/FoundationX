@@ -14,13 +14,13 @@ extension Decimal: Continuous, Signed, Number {
     
     @inlinable
     @inline(__always)
-    public init(uncheckedOpaqueValue value: opaque_Number) {
+    public init(uncheckedOpaqueValue value: _opaque_Number) {
         self = value.toDecimal()
     }
     
     @inlinable
     @inline(__always)
-    public init<N: opaque_Number>(unchecked value: N) {
+    public init<N: _opaque_Number>(unchecked value: N) {
         self = value.toDecimal()
     }
 }
