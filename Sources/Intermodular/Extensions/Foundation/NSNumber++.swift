@@ -6,5 +6,5 @@ import Foundation
 import Swallow
 
 extension NSNumber {
-
+    
 }
