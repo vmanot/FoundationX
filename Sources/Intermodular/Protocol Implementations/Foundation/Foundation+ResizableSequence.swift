@@ -8,7 +8,3 @@ import Swallow
 extension Data: ResizableCollection {
     
 }
-
-extension NSMutableData {
-    
-}

@@ -36,7 +36,7 @@ extension NSMutableData {
     
     public subscript(_position position: Index) -> Byte {
         get {
-            return UnsafeRawBufferPointer(unmanaged: self)[position]
+            UnsafeRawBufferPointer(unmanaged: self)[position]
         } set {
             UnsafeMutableRawBufferPointer(unmanaged: self)[position] = newValue
         }

@@ -7,7 +7,7 @@ import Swallow
 
 extension CharacterSet: AdditionOperatable {
     public static func + (lhs: CharacterSet, rhs: CharacterSet) -> CharacterSet {
-        return lhs.union(rhs)
+        lhs.union(rhs)
     }
     
     public static func += (lhs: inout CharacterSet, rhs: CharacterSet) {
@@ -37,7 +37,7 @@ extension Decimal: ArithmeticOperatable {
     }
     
     public static func % (lhs: Decimal, rhs: Decimal) -> Decimal {
-        return ((lhs as NSDecimalNumber) % (lhs as NSDecimalNumber)) as Decimal
+        ((lhs as NSDecimalNumber) % (lhs as NSDecimalNumber)) as Decimal
     }
     
     public static func %= (lhs: inout Decimal, rhs: Decimal) {
@@ -47,7 +47,7 @@ extension Decimal: ArithmeticOperatable {
 
 extension NSCharacterSet {
     public static func + (lhs: NSCharacterSet, rhs: NSCharacterSet) -> NSCharacterSet {
-        return NSMutableCharacterSet().applyingSelfOn({ $0.formUnion(with: lhs as CharacterSet); $0.formUnion(with: rhs as CharacterSet) })
+        NSMutableCharacterSet().applyingSelfOn({ $0.formUnion(with: lhs as CharacterSet); $0.formUnion(with: rhs as CharacterSet) })
     }
     
     public static func += (lhs: inout NSCharacterSet, rhs: NSCharacterSet) {
@@ -57,7 +57,7 @@ extension NSCharacterSet {
 
 extension NSDecimalNumber {
     public static func + (lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> NSDecimalNumber {
-        return lhs.adding(rhs)
+        lhs.adding(rhs)
     }
     
     public static func += (lhs: inout NSDecimalNumber, rhs: NSDecimalNumber) {
@@ -65,7 +65,7 @@ extension NSDecimalNumber {
     }
     
     public static func - (lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> NSDecimalNumber {
-        return lhs.subtracting(rhs)
+        lhs.subtracting(rhs)
     }
     
     public static func -= (lhs: inout NSDecimalNumber, rhs: NSDecimalNumber) {
@@ -73,7 +73,7 @@ extension NSDecimalNumber {
     }
     
     public static func * (lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> NSDecimalNumber {
-        return lhs.multiplying(by: rhs)
+        lhs.multiplying(by: rhs)
     }
     
     public static func *= (lhs: inout NSDecimalNumber, rhs: NSDecimalNumber) {
@@ -81,7 +81,7 @@ extension NSDecimalNumber {
     }
     
     public static func / (lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> NSDecimalNumber {
-        return lhs.dividing(by: rhs)
+        lhs.dividing(by: rhs)
     }
     
     public static func /= (lhs: inout NSDecimalNumber, rhs: NSDecimalNumber) {
@@ -89,7 +89,7 @@ extension NSDecimalNumber {
     }
     
     public static func % (lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> NSDecimalNumber {
-        return lhs.remainder(dividingBy: rhs)
+        lhs.remainder(dividingBy: rhs)
     }
     
     public static func %= (lhs: inout NSDecimalNumber, rhs: NSDecimalNumber) {
