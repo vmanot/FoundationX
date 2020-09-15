@@ -6,6 +6,12 @@ import Foundation
 import Swallow
 
 extension Data {
+    public func toUTF8String() -> String? {
+        String(data: self, encoding: .utf8)
+    }
+}
+
+extension Data {
     public static func allocate(byteCount: Int, alignment: Int) -> Data {
         let buffer = UnsafeMutableRawPointer.allocate(byteCount: byteCount, alignment: alignment)
         

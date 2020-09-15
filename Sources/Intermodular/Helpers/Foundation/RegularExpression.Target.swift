@@ -68,7 +68,7 @@ extension RegularExpression.Target {
                 return ".+"
             case .somethingBut(let value):
                 return "[^\(value.sanitizedForRegularExpression)]+"
-            
+                
             case .startOfLine:
                 return "^"
             case .endOfLine:
@@ -81,7 +81,7 @@ extension RegularExpression.Target {
                 return "\\d"
             case .number(let range):
                 return "\\d{\(range.lowerBound),\(range.upperBound)}"
-            
+                
             case .lineBreak:
                 return RegularExpression("\n").or(.init("\r\n")).stringValue
             case .tabSpace:
@@ -122,7 +122,7 @@ extension RegularExpression {
                 return add("(?:[\(value.sanitizedForRegularExpression)])")
             case .characterSet(let value):
                 return match(anyOf: .string(String(value.value)))
-            
+                
             default:
                 _ = TODO.unimplemented
         }
@@ -138,19 +138,7 @@ extension RegularExpression {
 }
 
 extension RegularExpression {
-    public struct TargetSet: ImplementationForwardingWrapper, Collection {
-        public typealias Value = [RegularExpression.Target]
-        
-        public typealias Element = Value.Element
-        public typealias Index = Value.Index
-        public typealias Iterator = Value.Iterator
-        
-        public let value: Value
-        
-        public init(_ value: Value) {
-            self.value = value
-        }
-    }
+    public typealias TargetSet = [RegularExpression.Target]
     
     public func match(_ options: TargetSet) -> RegularExpression {
         return RegularExpression.oneOf(options.map(RegEx.match(_:)))
@@ -162,5 +150,5 @@ public func || (lhs: RegularExpression.Target, rhs: RegularExpression.Target) ->
 }
 
 public func || (lhs: RegularExpression.TargetSet, rhs: RegularExpression.Target) -> RegularExpression.TargetSet {
-    return .init(.init(lhs.value.appending(rhs)))
+    return .init(lhs.appending(rhs))
 }

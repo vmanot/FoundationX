@@ -10,16 +10,23 @@ extension URL {
         guard let url = bundle.url(forResource: fileName, withExtension: `extension`) else {
             return nil
         }
-
+        
         self = url
     }
-
+    
     public init?(bundle: Bundle, fileName: String, withOrWithoutExtension `extension`: String) {
         guard let url = URL(bundle: bundle, fileName: fileName, extension: `extension`) ?? URL(bundle: bundle, fileName: fileName, extension: nil) else {
             return nil
         }
-
+        
         self = url
     }
+    
+    public mutating func setResourceValues(_ body: (inout URLResourceValues) throws -> Void) throws {
+        var values = URLResourceValues()
+        
+        try body(&values)
+        
+        try setResourceValues(values)
+    }
 }
-
