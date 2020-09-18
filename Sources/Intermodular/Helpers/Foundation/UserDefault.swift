@@ -6,10 +6,18 @@ import Foundation
 import Swallow
 
 @propertyWrapper
-public struct UserDefault<Value> {
+public struct UserDefault<Value: Codable> {
     public let key: String
     public let defaultValue: Value
     public let defaults: UserDefaults
+    
+    public var wrappedValue: Value {
+        get {
+            try! defaults.decode(Value.self, forKey: key).unwrap()
+        } set {
+            try! defaults.encode(newValue, forKey: key)
+        }
+    }
     
     public init(
         key: String,
@@ -26,17 +34,5 @@ public struct UserDefault<Value> {
         defaults: UserDefaults = .standard
     ) where Value == Optional<T> {
         self.init(key: key, defaultValue: .none, defaults: defaults)
-    }
-    
-    public var wrappedValue: Value {
-        get {
-            if Value.self is AnyClass {
-                return defaults.object(forKey: key) as? Value ?? defaultValue
-            } else {
-                return defaults.value(forKey: key) as? Value ?? defaultValue
-            }
-        } set {
-            defaults.set(newValue, forKey: key)
-        }
     }
 }

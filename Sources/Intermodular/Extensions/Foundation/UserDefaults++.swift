@@ -14,3 +14,31 @@ extension UserDefaults {
         }
     }
 }
+
+extension UserDefaults {
+    public func decode<Value: Codable>(_ type: Value.Type = Value.self, forKey key: String) throws -> Value? {
+        guard value(forKey: key) != nil else {
+            return nil
+        }
+        
+        if let type = type as? UserDefaultsCoder.Type {
+            return .some(try type.decode(from: self, forKey: key) as! Value)
+        } else if let value = value(forKey: key) as? Value {
+            return value
+        } else if let data = value(forKey: key) as? Data {
+            return try PropertyListDecoder().decode(Value.self, from: data)
+        } else {
+            return nil
+        }
+    }
+    
+    public func encode<Value: Codable>(_ value: Value, forKey key: String) throws {
+        if let value = value as? UserDefaultsCoder {
+            try value.encode(to: self, forKey: key)
+        } else if let value = value as? URL {
+            setValue(value.path, forKey: key)
+        } else {
+            setValue(try PropertyListEncoder().encode(value), forKey: key)
+        }
+    }
+}
