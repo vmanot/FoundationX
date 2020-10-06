@@ -13,7 +13,7 @@ public struct UserDefault<Value: Codable> {
     
     public var wrappedValue: Value {
         get {
-            try! defaults.decode(Value.self, forKey: key).unwrap()
+            try! defaults.decode(Value.self, forKey: key) ?? defaultValue
         } set {
             try! defaults.encode(newValue, forKey: key)
         }

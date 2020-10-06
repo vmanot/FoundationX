@@ -6,6 +6,16 @@ import Foundation
 import Swallow
 
 extension Date {
+    public init(string: String, dateFormat: String) throws {
+        let formatter = DateFormatter()
+        
+        formatter.dateFormat = dateFormat
+        
+        self = try formatter.date(from: string).unwrap()
+    }
+}
+
+extension Date {
     /// Convert this date to a `String` given a certain format.
     public func toString(dateFormat format: String) -> String {
         DateFormatter()
