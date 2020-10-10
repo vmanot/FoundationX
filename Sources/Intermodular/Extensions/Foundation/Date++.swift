@@ -13,48 +13,12 @@ extension Date {
         
         self = try formatter.date(from: string).unwrap()
     }
-}
-
-extension Date {
+    
     /// Convert this date to a `String` given a certain format.
     public func toString(dateFormat format: String) -> String {
         DateFormatter()
             .then({ $0.dateFormat = format })
             .string(from: self)
-    }
-    
-    public func get(
-        _ components: Calendar.Component...,
-        calendar: Calendar = Calendar.current
-    ) -> DateComponents {
-        return calendar.dateComponents(Set(components), from: self)
-    }
-    
-    public func get(
-        _ component: Calendar.Component,
-        calendar: Calendar = Calendar.current
-    ) -> Int {
-        return calendar.component(component, from: self)
-    }
-    
-    /// Number of days (relative to this date) till a given date.
-    public func days(till other: Date, in calendar: Calendar = .current) -> Int! {
-        calendar.dateComponents([.day], from: self, to: other).day
-    }
-}
-
-extension Date {
-    /// `DD.MM.YYY`
-    public var dd_dot_MM_dot_YYYY: String {
-        toString(dateFormat: "dd.MM.yyyy")
-    }
-    
-    public var hh_colon_mm_colon_space_a: String {
-        toString(dateFormat: "hh:mm a")
-    }
-    
-    public var hh_colon_mm_colon_ss_space_a: String {
-        toString(dateFormat: "hh:mm:ss a")
     }
 }
 
@@ -83,6 +47,33 @@ extension Date {
         components.second = -1
         
         return Calendar.current.date(byAdding: components, to: startOfMonth)!
+    }
+    
+    public func get(
+        _ components: Calendar.Component...,
+        calendar: Calendar = Calendar.current
+    ) -> DateComponents {
+        return calendar.dateComponents(Set(components), from: self)
+    }
+    
+    public func get(
+        _ component: Calendar.Component,
+        calendar: Calendar = Calendar.current
+    ) -> Int {
+        return calendar.component(component, from: self)
+    }
+    
+    public func adding(days: Int) -> Date! {
+        Calendar.current.date(byAdding: DateComponents(day: days), to: Date())
+    }
+    
+    /// Number of days (relative to this date) till a given date.
+    public func days(till other: Date, in calendar: Calendar = .current) -> Int! {
+        calendar.dateComponents([.day], from: self, to: other).day
+    }
+    
+    public func seconds(from other: Date) -> Int {
+        return Calendar.current.dateComponents([.second], from: other, to: self).second ?? 0
     }
 }
 
@@ -114,42 +105,18 @@ extension Date {
     public var secondsToNow: Int {
         Calendar.current.dateComponents([.second], from: self, to: Date()).second ?? 0
     }
-    
-    public func seconds(from other: Date) -> Int {
-        return Calendar.current.dateComponents([.second], from: other, to: self).second ?? 0
+}
+
+extension Date {
+    public var dd_dot_MM_dot_YYYY: String {
+        toString(dateFormat: "dd.MM.yyyy")
     }
     
-    public var relativeTimeDescription: String? {
-        if yearsToNow > 0 {
-            return "\(yearsToNow) year" + (yearsToNow > 1 ? "s" : "") + " ago"
-        }
-        
-        if monthsToNow > 0 {
-            return "\(monthsToNow) month" + (monthsToNow > 1 ? "s" : "") + " ago"
-        }
-        
-        if weeksToNow > 0 {
-            return "\(weeksToNow) week" + (weeksToNow > 1 ? "s" : "") + " ago"
-        }
-        
-        if daysToNow > 0 {
-            return daysToNow == 1 ? "Yesterday" : "\(daysToNow) days ago"
-        }
-        
-        if hoursToNow > 0 {
-            return "\(hoursToNow) hour" + (hoursToNow > 1 ? "s" : "") + " ago"
-        }
-        
-        if minutesToNow > 0 {
-            return "\(minutesToNow) minute" + (minutesToNow > 1 ? "s" : "") + " ago"
-        }
-        
-        if secondsToNow > 0 {
-            return secondsToNow < 15
-                ? "Just now"
-                : "\(secondsToNow) second" + (secondsToNow > 1 ? "s" : "") + " ago"
-        }
-        
-        return nil
+    public var hh_colon_mm_colon_space_a: String {
+        toString(dateFormat: "hh:mm a")
+    }
+    
+    public var hh_colon_mm_colon_ss_space_a: String {
+        toString(dateFormat: "hh:mm:ss a")
     }
 }
