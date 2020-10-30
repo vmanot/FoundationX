@@ -8,12 +8,12 @@ import Swift
 
 public protocol HasDelegate: NSObjectProtocol {
     associatedtype Delegate: AnyObject
-
+    
     var delegate: Delegate? { get set }
     var delegateType: Delegate.Type { get }
     var delegateProtocol: Protocol { get }
-
-     func _setDelegate(_ delegate: Delegate?)
+    
+    func _setDelegate(_ delegate: Delegate?)
 }
 
 public protocol HasWeakDelegate: HasDelegate {
