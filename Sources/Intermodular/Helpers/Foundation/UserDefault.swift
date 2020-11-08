@@ -9,30 +9,30 @@ import Swallow
 public struct UserDefault<Value: Codable> {
     public let key: String
     public let defaultValue: Value
-    public let defaults: UserDefaults
+    public let store: UserDefaults
     
     public var wrappedValue: Value {
         get {
-            try! defaults.decode(Value.self, forKey: key) ?? defaultValue
+            try! store.decode(Value.self, forKey: key) ?? defaultValue
         } set {
-            try! defaults.encode(newValue, forKey: key)
+            try! store.encode(newValue, forKey: key)
         }
     }
     
     public init(
-        key: String,
-        defaultValue: Value,
-        defaults: UserDefaults = .standard
+        _ key: String,
+        default defaultValue: Value,
+        store: UserDefaults = .standard
     ) {
         self.key = key
         self.defaultValue = defaultValue
-        self.defaults = defaults
+        self.store = store
     }
     
     public init<T>(
-        key: String,
-        defaults: UserDefaults = .standard
+        _ key: String,
+        store: UserDefaults = .standard
     ) where Value == Optional<T> {
-        self.init(key: key, defaultValue: .none, defaults: defaults)
+        self.init(key, default: .none, store: store)
     }
 }
