@@ -87,3 +87,20 @@ extension Calendar.Component: RawRepresentable, Codable {
         }
     }
 }
+
+extension URLQueryItem: Codable {
+    private struct _CodableRepresentation: Codable {
+        let name: String
+        let value: String?
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let codableRepresentation = try decoder.decode(single: _CodableRepresentation.self)
+        
+        self.init(name: codableRepresentation.name, value: codableRepresentation.value)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        try encoder.encode(single: _CodableRepresentation(name: name, value: value))
+    }
+}

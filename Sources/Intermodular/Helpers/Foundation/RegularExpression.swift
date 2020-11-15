@@ -119,7 +119,7 @@ extension RegularExpression {
     }
 }
 
-// MARK: - Protocol Implementations -
+// MARK: - Protocol Conformances -
 
 extension RegularExpression: AdditionOperatable {
     @inlinable
