@@ -18,7 +18,9 @@ public struct UserDefault<Value: Codable> {
             try! store.encode(newValue, forKey: key)
         }
     }
-    
+}
+
+extension UserDefault {
     public init(
         _ key: String,
         default defaultValue: Value,

@@ -124,7 +124,7 @@ extension RegularExpression {
                 return match(anyOf: .string(String(value.value)))
                 
             default:
-                _ = TODO.unimplemented
+                fatalError(reason: .unimplemented)
         }
     }
     
