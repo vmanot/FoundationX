@@ -33,6 +33,12 @@ extension UserDefaults {
     }
     
     public func encode<Value: Codable>(_ value: Value, forKey key: String) throws {
+        if let value = value as? _opaque_Optional, value.isNil {
+            setValue(nil, forKey: key)
+            
+            return
+        }
+        
         if let value = value as? UserDefaultsCoder {
             try value.encode(to: self, forKey: key)
         } else if let value = value as? URL {

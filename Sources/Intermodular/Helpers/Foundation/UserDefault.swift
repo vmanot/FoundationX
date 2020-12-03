@@ -2,6 +2,7 @@
 // Copyright (c) Vatsal Manot
 //
 
+import Combine
 import Foundation
 import Swallow
 
@@ -18,9 +19,7 @@ public struct UserDefault<Value: Codable> {
             try! store.encode(newValue, forKey: key)
         }
     }
-}
-
-extension UserDefault {
+    
     public init(
         _ key: String,
         default defaultValue: Value,
@@ -36,5 +35,43 @@ extension UserDefault {
         store: UserDefaults = .standard
     ) where Value == Optional<T> {
         self.init(key, default: .none, store: store)
+    }
+}
+
+extension UserDefault {
+    @propertyWrapper
+    public struct Published {
+        @UserDefault
+        public var wrappedValue: Value
+        
+        @inlinable
+        public static subscript<EnclosingSelf: ObservableObject>(
+            _enclosingInstance object: EnclosingSelf,
+            wrapped wrappedKeyPath: ReferenceWritableKeyPath<EnclosingSelf, Value>,
+            storage storageKeyPath: ReferenceWritableKeyPath<EnclosingSelf, Published>
+        ) -> Value where EnclosingSelf.ObjectWillChangePublisher == ObservableObjectPublisher {
+            get {
+                object[keyPath: storageKeyPath].wrappedValue
+            } set {
+                object.objectWillChange.send()
+                
+                object[keyPath: storageKeyPath].wrappedValue = newValue
+            }
+        }
+        
+        public init(
+            wrappedValue: Value,
+            _ key: String,
+            store: UserDefaults = .standard
+        ) {
+            self._wrappedValue = .init(key, default: wrappedValue, store: store)
+        }
+        
+        public init<T>(
+            _ key: String,
+            store: UserDefaults = .standard
+        ) where Value == Optional<T> {
+            self.init(wrappedValue: .none, key, store: store)
+        }
     }
 }
