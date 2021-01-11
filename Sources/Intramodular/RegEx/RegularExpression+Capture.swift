@@ -7,7 +7,15 @@ import Swallow
 
 extension RegularExpression {
     public var isWrappedInNonCapturingGroup: Bool {
-        return (pattern[try: 0..<3] == "(?:") && (pattern.last == ")")
+        guard (pattern[try: 0..<3] == "(?:") else {
+            return false
+        }
+
+        guard pattern.last == ")" else {
+            return false
+        }
+        
+        return true
     }
 
     public func wrappedInNonCapturingGroup() -> RegularExpression {

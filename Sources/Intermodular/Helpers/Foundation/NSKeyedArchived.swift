@@ -53,7 +53,9 @@ public struct NSKeyedArchived<Value>: Codable {
 }
 
 extension NSKeyedArchived: Equatable where Value: Equatable {
-    
+    public static func == (lhs: Self, rhs: Self) {
+        
+    }
 }
 
 extension NSKeyedArchived: Hashable where Value: Hashable {

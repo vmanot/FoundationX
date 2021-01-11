@@ -7,7 +7,9 @@ import Foundation
 import Swallow
 
 extension NSMutableDictionary {
-    @objc public dynamic class func mutableDictionaryUsingWeakReferences(withCapacity capacity: Int = 0) -> NSMutableDictionary {
+    @objc public dynamic class func mutableDictionaryUsingWeakReferences(
+        withCapacity capacity: Int = 0
+    ) -> NSMutableDictionary {
         var keyCallbacks = kCFTypeDictionaryKeyCallBacks
         var valueCallbacks = kCFTypeDictionaryValueCallBacks
         
