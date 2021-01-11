@@ -102,6 +102,7 @@ extension DateComponents {
 
 import SwiftUI
 
+@available(tvOS, unavailable)
 @available(watchOS, unavailable)
 extension DatePicker {
     public init(
@@ -140,6 +141,7 @@ extension DatePicker {
     }
 }
 
+@available(tvOS, unavailable)
 @available(watchOS, unavailable)
 extension DatePicker where Label == Text {
     public init(
