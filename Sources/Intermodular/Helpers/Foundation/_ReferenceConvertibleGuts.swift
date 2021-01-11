@@ -5,7 +5,7 @@
 import Foundation
 import Swallow
 
-public struct ReferenceConvertibleBacking<Base: NSObject & NSCopying> {
+public struct _ReferenceConvertibleGuts<Base: NSObject & NSCopying> {
     private var value: Base
 
     public mutating func knownUniquelyReferencedValue() -> Base {
@@ -17,7 +17,7 @@ public struct ReferenceConvertibleBacking<Base: NSObject & NSCopying> {
     }
 }
 
-public enum MutableReferenceConvertibleBacking<Base: MutableConvertible & NSObject & NSCopying> where Base.MutableRepresentation: NSObject & NSCopying {
+public enum Mutable_ReferenceConvertibleGuts<Base: MutableConvertible & NSObject & NSCopying> where Base.MutableRepresentation: NSObject & NSCopying {
     case immutable(Base)
     case mutable(Base.MutableRepresentation)
 

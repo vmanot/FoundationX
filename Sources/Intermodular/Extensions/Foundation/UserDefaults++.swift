@@ -21,7 +21,7 @@ extension UserDefaults {
             return nil
         }
         
-        if let type = type as? UserDefaultsCoder.Type {
+        if let type = type as? KeyValueCodable.Type {
             return .some(try type.decode(from: self, forKey: key) as! Value)
         } else if let value = value(forKey: key) as? Value {
             return value
@@ -39,7 +39,7 @@ extension UserDefaults {
             return
         }
         
-        if let value = value as? UserDefaultsCoder {
+        if let value = value as? KeyValueCodable {
             try value.encode(to: self, forKey: key)
         } else if let value = value as? URL {
             setValue(value.path, forKey: key)
