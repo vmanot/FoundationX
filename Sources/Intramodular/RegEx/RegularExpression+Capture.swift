@@ -6,130 +6,105 @@ import Foundation
 import Swallow
 
 extension RegularExpression {
-    public var isWrappedInNonCapturingGroup: Bool {
-        guard (pattern[try: 0..<3] == "(?:") else {
-            return false
-        }
-
-        guard pattern.last == ")" else {
-            return false
-        }
-        
-        return true
+    public func add(mode: RegularExpression.Options) -> RegularExpression {
+        modifyPattern({ "(?\(mode))" + $0 })
     }
+    
+    public func or(_ expression: RegularExpression) -> RegularExpression {
+        self.nonCaptureGroup()
+            .modifyPattern({ $0.appending("|") })
+            .append(expression)
+            .nonCaptureGroup()
+    }
+    
+    public static func oneOf(_ expressions: [RegularExpression]) -> RegularExpression {
+        return RegularExpression(pattern: expressions.map({ $0.nonCaptureGroup().stringValue }).separated(by: "|").joined()).nonCaptureGroup()
+    }
+    
+    public func or(oneOf expressions: [RegularExpression]) -> RegularExpression {
+        RegularExpression.oneOf(expressions.inserting(self))
+    }
+    
+    public func remove(mode: RegularExpression.Options) -> RegularExpression {
+        modifyPattern({ "(?-\(mode))".appending($0) })
+    }
+    
+    public func optional() -> RegularExpression {
+        nonCaptureGroup().modifyPattern({ $0.appending("?") })
+    }
+    
+    public func repeating(_ count: Int) -> RegularExpression {
+        nonCaptureGroup().modifyPattern({ $0.appending("{\(count)}") })
+    }
+    
+    public func repeating() -> RegularExpression {
+        nonCaptureGroup().modifyPattern({ $0.appending("+") })
+    }
+}
 
-    public func wrappedInNonCapturingGroup() -> RegularExpression {
-        guard pattern != "", isValid, !isWrappedInNonCapturingGroup else {
+extension RegularExpression {
+    public func capture(_ expression: RegularExpression) -> RegularExpression {
+        modifyPattern {
+            $0 + expression.modifyPattern({ "(" + $0 + ")" }).pattern
+        }
+    }
+    
+    public func capture(_ closure: ((RegularExpression) -> RegularExpression)) -> RegularExpression {
+        capture(closure(.init()))
+    }
+    
+    public func capture(_ option: Target) -> RegularExpression {
+        capture(RegEx.match(option))
+    }
+    
+    public func capture(oneOf strings: String...) -> RegularExpression {
+        return capture(.oneOf(strings))
+    }
+    
+    public func capture(anyOf string: String) -> RegularExpression {
+        capture(RegEx.match(anyOf: .string(string)))
+    }
+    
+    public func capture(anyOf string: String, repeating count: Int) -> RegularExpression {
+        capture(RegEx.match(anyOf: .string(string)).repeating(count))
+    }
+    
+    public func capture(anyOf characterSet: CharacterSet) -> RegularExpression {
+        capture(RegEx.match(anyOf: .characterSet(characterSet)))
+    }
+    
+    public func capture(anyOf characterSet: CharacterSet, repeating count: Int) -> RegularExpression {
+        capture(RegEx.match(anyOf: .characterSet(characterSet)).repeating(count))
+    }
+}
+
+extension RegularExpression {
+    var isContainedInNotCaptureGroup: Bool {
+        (pattern[try: 0..<3] == "(?:") && (pattern.last == Character(")"))
+    }
+    
+    func nonCaptureGroup() -> RegularExpression {
+        guard pattern != "", isValid, !isContainedInNotCaptureGroup else {
             return self
         }
         
         return .init(pattern: "(?:" + pattern + ")")
     }
     
-    public func unwrappedIfInNonCapturingGroup() -> RegularExpression {
-        guard isWrappedInNonCapturingGroup else {
+    func captureGroup() -> RegularExpression {
+        decomposeNonCaptureGroupIfNecessary().modifyPattern({ "(".appending($0).appending(")" )})
+    }
+    
+    private func decomposeNonCaptureGroupIfNecessary() -> RegularExpression {
+        guard isContainedInNotCaptureGroup else {
             return self
         }
         
         var pattern = self.pattern
-
+        
         pattern.removeFirst(3)
         pattern.remove(at: pattern.lastIndex)
         
         return .init(pattern: pattern)
-    }
-    
-    public func wrappedInCapturingGroup() -> RegularExpression {
-        let body = isWrappedInNonCapturingGroup ? unwrappedIfInNonCapturingGroup() : self
-        
-        return body.add(toStartOfPattern: "(").add(toEndOfPattern: ")'")
-    }
-}
-
-extension RegularExpression {
-    public func add(toEndOfPattern other: String) -> RegularExpression {
-        return .init(pattern: pattern + other)
-    }
-    
-    public func add(toStartOfPattern other: String) -> RegularExpression {
-        return .init(pattern: other + pattern)
-    }
-
-    public func add(mode: RegularExpression.Options) -> RegularExpression {
-        return add(toStartOfPattern: "(?\(mode))")
-    }
-    
-    public func add(_ expression: String) -> RegularExpression {
-        return add(RegularExpression(expression))
-    }
-    
-    public func add(_ expression: RegularExpression) -> RegularExpression {
-        return self + expression
-    }
-    
-    public func or(_ expression: RegularExpression) -> RegularExpression {
-        return wrappedInNonCapturingGroup().add(toEndOfPattern: "|").add(expression).wrappedInNonCapturingGroup()
-    }
-    
-    public static func oneOf(_ expressions: [RegularExpression]) -> RegularExpression {
-        let string = expressions.map({ $0.wrappedInNonCapturingGroup().stringValue }).separated(by: "|").joined()
-        
-        return RegularExpression(string).wrappedInNonCapturingGroup()
-    }
-    
-    public func or(oneOf expressions: [RegularExpression]) -> RegularExpression {
-        return RegularExpression.oneOf(expressions.inserting(self))
-    }
-
-    public func removing(mode: RegularExpression.Options) -> RegularExpression {
-        return add(toStartOfPattern: "(?-\(mode))")
-    }
-    
-    public func makingSelfOptional() -> RegularExpression {
-        return wrappedInNonCapturingGroup().add(toEndOfPattern: "?")
-    }
-    
-    public func repeating(_ count: Int) -> RegularExpression {
-        return wrappedInNonCapturingGroup().add(toEndOfPattern: "{\(count)}")
-    }
-    
-    public func repeating() -> RegularExpression {
-        return wrappedInNonCapturingGroup().add(toEndOfPattern: "+")
-    }
-}
-
-extension String {
-    public var sanitizedForRegularExpression: String {
-        return NSRegularExpression.escapedPattern(for: self)
-    }
-}
-
-extension RegularExpression {
-    public func capture(_ closure: ((RegularExpression) -> RegularExpression)) -> RegularExpression {
-        return self.add(
-            toEndOfPattern: closure(.init())
-                .add(toStartOfPattern: "(")
-                .add(toEndOfPattern: ")").pattern
-        )
-    }
-    
-    public func capture(_ option: Target) -> RegularExpression {
-        return capture({ $0.match(option) })
-    }
-    
-    public func capture(anyOf string: String) -> RegularExpression {
-        return capture({ $0.match(anyOf: .string(string)) })
-    }
-    
-    public func capture(anyOf string: String, repeating count: Int) -> RegularExpression {
-        return capture({ $0.match(anyOf: .string(string)).repeating(count) })
-    }
-    
-    public func capture(anyOf characterSet: CharacterSet) -> RegularExpression {
-        return capture({ $0.match(anyOf: .characterSet(characterSet)) })
-    }
-    
-    public func capture(anyOf characterSet: CharacterSet, repeating count: Int) -> RegularExpression {
-        return capture({ $0.match(anyOf: .characterSet(characterSet)).repeating(count) })
     }
 }
