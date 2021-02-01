@@ -6,28 +6,29 @@ import Foundation
 import Swallow
 
 extension NSRegularExpression.Options {
-    public var modeModifier: Character {
+    public var modifiers: [Character] {
+        var result: [Character] = []
+        
         switch self {
             case .caseInsensitive:
-                return "i"
+                result.append("i")
             case .allowCommentsAndWhitespace:
-                return "x"
+                result.append("x")
             case .ignoreMetacharacters:
-                return "U"
+                result.append("U")
             case .dotMatchesLineSeparators:
-                return "s"
+                result.append("s")
             case .anchorsMatchLines:
-                return "m"
+                result.append("m")
             case .useUnixLineSeparators:
-                return "d"
+                result.append("d")
             case .useUnicodeWordBoundaries:
-                return "u"
-            
+                result.append("u")
             default:
                 break
         }
         
-        return Never.materialize(reason: .impossible)
+        return result
     }
     
     public init?(modeModifier: Character) {

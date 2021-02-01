@@ -6,8 +6,32 @@ import Foundation
 import Swallow
 
 extension RegularExpression {
-    public func add(mode: Options) -> Self {
-        modifyPattern({ "(?\(mode))" + $0 })
+    public func options(_ options: Options) -> Self {
+        guard !options.isEmpty else {
+            return self
+        }
+        
+        return self
+            .modifyPattern({ "(?\(options.modifiers.map({ String($0) }).joined()))" + $0 })
+    }
+    
+    public func options(on onOptions: Options, off offOptions: Options) -> Self {
+        guard !(onOptions.isEmpty && offOptions.isEmpty) else {
+            return self
+        }
+        
+        guard !offOptions.isEmpty else {
+            return options(onOptions)
+        }
+        
+        return self
+            .modifyPattern {
+                let onOptions = onOptions.modifiers.map({ String($0) }).joined()
+                let offOptions = offOptions.modifiers.map({ String($0) }).joined()
+                
+                return "(?\(onOptions)-\(offOptions))" + $0
+            }
+            .nonCaptureGroup()
     }
     
     public func or(_ expression: Self) -> Self {

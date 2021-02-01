@@ -94,7 +94,7 @@ extension RegularExpression {
                     continue
                 }
                 
-                if let name = names.first(where: { $0.value.index == (i + 1) })?.key {
+                if let name = names.first(where: { ($0.value.index + 1) == i })?.key {
                     dict[name] = .init(g)
                 }
             }
@@ -171,7 +171,7 @@ extension RegularExpression {
         }
     }
     
-    private func decomposeNonCaptureGroupIfNecessary() -> Self {
+    func decomposeNonCaptureGroupIfNecessary() -> Self {
         guard isNonCapturingGroupContained else {
             return self
         }
