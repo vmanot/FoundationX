@@ -9,9 +9,7 @@ public var RegEx: RegularExpression {
     return .init()
 }
 
-public struct RegularExpression: Initiable {
-    public typealias Options = NSRegularExpression.Options
-    
+public struct RegularExpression: Initiable {    
     public var pattern: String
     public var options: Options
     

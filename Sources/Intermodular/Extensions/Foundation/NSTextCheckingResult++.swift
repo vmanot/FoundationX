@@ -10,7 +10,7 @@ extension NSTextCheckingResult {
         return (0..<numberOfRanges).map({ Range(range(at: $0), in: string) })
     }
 
-    public func groups(in string: String) -> [Substring?] {
+    public func substrings(in string: String) -> [Substring?] {
         return ranges(in: string).optionalMap({ string[$0] })
     }
 }

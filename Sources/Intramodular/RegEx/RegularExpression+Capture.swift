@@ -6,16 +6,28 @@ import Foundation
 import Swallow
 
 extension RegularExpression {
-    public func capture(_ expression: Self, named name: String? = nil) -> Self {
-        self + expression.captureGroup(named: name)
+    public func capture(
+        _ expression: Self,
+        named name: String? = nil,
+        options: Options = []
+    ) -> Self {
+        self + expression.captureGroup(named: name).options(options)
     }
     
-    public func capture(_ name: String? = nil, _ closure: ((Self) -> Self)) -> Self {
-        capture(closure(.init()), named: name)
+    public func capture(
+        _ name: String? = nil,
+        options: Options = [],
+        _ closure: ((Self) -> Self)
+    ) -> Self {
+        capture(closure(.init()), named: name, options: options)
     }
     
-    public func capture(_ option: Target, named name: String? = nil) -> Self {
-        capture(RegEx.match(option), named: name)
+    public func capture(
+        _ option: Target,
+        named name: String? = nil,
+        options: Options = []
+    ) -> Self {
+        capture(RegEx.match(option), named: name, options: options)
     }
     
     public func capture(oneOf strings: String...) -> Self {
@@ -80,26 +92,25 @@ extension RegularExpression {
         in string: String,
         options: NSRegularExpression.MatchingOptions = [],
         range: NSRange? = nil
-    ) -> [String: String] {
+    ) -> [String: [Substring]] {
         let range = range ?? NSRange(location: 0, length: string.utf16.count)
         let regex = self as NSRegularExpression
         let names = regex.textCheckingResultsOfNamedCaptureGroups()
         
-        var dict = [String: String]()
-        let matchResult = regex.matches(in: string, options: options, range: range)
+        var result = [String: [Substring]]()
+        let matches = regex.matches(in: string, options: options, range: range)
         
-        for (_, m) in matchResult.enumerated() {
-            for i in 0 ..< m.numberOfRanges {
-                guard let g = Range(m.range(at: i), in: string).map({ string[$0] }) else {
-                    continue
-                }
-                
-                if let name = names.first(where: { ($0.value.index + 1) == i })?.key {
-                    dict[name] = .init(g)
+        for (_, matchResult) in matches.enumerated() {
+            let substrings = matchResult.substrings(in: string).compact()
+            
+            for (index, substring) in substrings.enumerated() {
+                if let name = names.first(where: { ($0.value.index + 1) == index })?.key {
+                    result[name, default: []].append(substring)
                 }
             }
         }
-        return dict
+        
+        return result
     }
 }
 
@@ -111,13 +122,8 @@ fileprivate extension NSRegularExpression {
     func textCheckingResultsOfNamedCaptureGroups() -> [String: GroupNamesSearchResult] {
         var result = [String: GroupNamesSearchResult]()
         
-        guard let greg = try? NSRegularExpression(pattern: "^\\(\\?<([\\w\\a_-]*)>$", options: NSRegularExpression.Options.dotMatchesLineSeparators) else {
-            return result
-        }
-        
-        guard let reg = try? NSRegularExpression(pattern: "\\(.*?>", options: NSRegularExpression.Options.dotMatchesLineSeparators) else {
-            return result
-        }
+        let greg = try! NSRegularExpression(pattern: "^\\(\\?<([\\w\\a_-]*)>$", options: NSRegularExpression.Options.dotMatchesLineSeparators)
+        let reg = try! NSRegularExpression(pattern: "\\(.*?>", options: NSRegularExpression.Options.dotMatchesLineSeparators)
         
         let m = reg.matches(
             in: pattern,
@@ -125,9 +131,12 @@ fileprivate extension NSRegularExpression {
             range: NSRange(location: 0, length: pattern.utf16.count)
         )
         
+        var counter: Int = 0
+        
         for (n, g) in m.enumerated() {
             let r = Range(g.range(at: 0), in: pattern)
             let gstring = String(pattern[r!])
+            
             let gmatch = greg.matches(
                 in: gstring,
                 options: NSRegularExpression.MatchingOptions.anchored,
@@ -136,7 +145,9 @@ fileprivate extension NSRegularExpression {
             
             if gmatch.count > 0 {
                 let r2 = Range(gmatch[0].range(at: 1), in: gstring)!
-                result[String(gstring[r2])] = (g, gmatch[0], n)
+                result[String(gstring[r2])] = (g, gmatch[0], n + counter)
+            } else {
+                counter -= 1
             }
         }
         
