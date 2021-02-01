@@ -29,6 +29,8 @@ extension RegularExpression {
     }
 }
 
+// MARK: - Protocol Conformances -
+
 extension RegularExpression.Target: ExpressibleByStringLiteral {
     public typealias StringLiteralType = String
     
@@ -37,9 +39,7 @@ extension RegularExpression.Target: ExpressibleByStringLiteral {
     }
 }
 
-// MARK: - Helpers -
-
-extension RegularExpression.Target {
+extension RegularExpression.Target: RawValueConvertible {
     public var rawValue: String {
         switch self {
             case .allEnglishAlphabets:
@@ -84,13 +84,28 @@ extension RegularExpression.Target {
     }
 }
 
+// MARK: - API -
+
 extension RegularExpression {
+    public func match(_ target: RegularExpression.Target) -> RegularExpression {
+        self + .init(pattern: target.rawValue)
+    }
+    
+    @_disfavoredOverload
+    public func match(_ expression: RegularExpression) -> RegularExpression {
+        self + expression.nonCaptureGroup()
+    }
+    
+    public func match(_ closure: ((RegularExpression) -> RegularExpression)) -> RegularExpression {
+        match(closure(.init()))
+    }
+    
     public func or(_ target: RegularExpression.Target) -> RegularExpression {
         or(RegEx.match(target))
     }
     
-    public func match(_ option: RegularExpression.Target) -> RegularExpression {
-        self + .init(pattern: option.rawValue)
+    public func match(_ options: [RegularExpression.Target]) -> RegularExpression {
+        RegularExpression.oneOf(options.map(RegEx.match(_:)))
     }
     
     public func match(oneOf strings: String...) -> RegularExpression {
@@ -103,7 +118,6 @@ extension RegularExpression {
                 return self + .init(pattern: "(?:[\(value.sanitizedForRegularExpression)])")
             case .characterSet(let value):
                 return match(anyOf: .string(String(value.value)))
-                
             default:
                 fatalError(reason: .unimplemented)
         }
@@ -112,28 +126,6 @@ extension RegularExpression {
     public func match(maybe target: RegularExpression.Target) -> RegularExpression {
         self + "(?:\(target.rawValue))?"
     }
-    
-    public func match(_ closure: ((RegularExpression) -> RegularExpression)) -> RegularExpression {
-        modifyPattern {
-            $0.appending("(?:" + closure(.init()).pattern + ")")
-        }
-    }
-}
-
-extension RegularExpression {
-    public typealias TargetSet = [RegularExpression.Target]
-    
-    public func match(_ options: TargetSet) -> RegularExpression {
-        RegularExpression.oneOf(options.map(RegEx.match(_:)))
-    }
-}
-
-public func || (lhs: RegularExpression.Target, rhs: RegularExpression.Target) -> RegularExpression.TargetSet {
-    return .init([lhs, rhs])
-}
-
-public func || (lhs: RegularExpression.TargetSet, rhs: RegularExpression.Target) -> RegularExpression.TargetSet {
-    return .init(lhs.appending(rhs))
 }
 
 // MARK: - Helpers -

@@ -80,40 +80,12 @@ extension RegularExpression {
 }
 
 extension RegularExpression {
-    public func captureRanges(in string: String, options: NSRegularExpression.MatchingOptions = []) -> [[Range<String.Index>?]] {
-        var matches: [[Range<String.Index>?]] = []
-        
-        (self as NSRegularExpression).enumerateMatches(in: string, options: options, range: string.nsRangeBounds) { result, flags, stop in
-            if let result = result {
-                matches.append(result.ranges(in: string))
-            }
-        }
-        
-        return matches
-    }
-    
-    public func captureGroups(in string: String, options: NSRegularExpression.MatchingOptions = []) -> [[Substring?]] {
-        return captureRanges(in: string, options: options).map({ $0.optionalMap({ string[$0] }) })
-    }
-}
-
-extension RegularExpression {
-    public func captureFirstRanges(in string: String, options: NSRegularExpression.MatchingOptions = []) -> [Range<String.Index>?] {
-        return (self as NSRegularExpression).firstMatch(in: string, options: options, range: string.nsRangeBounds)?.ranges(in: string) ?? []
-    }
-    
-    public func captureFirstGroups(in string: String, options: NSRegularExpression.MatchingOptions = []) -> [Substring?] {
-        return captureFirstRanges(in: string, options: options).optionalMap({ string[$0] })
-    }
-}
-
-extension RegularExpression {
     public func replace(in string: String, withTemplate template: String) -> String {
-        return (self as NSRegularExpression).stringByReplacingMatches(in: string, options: [], range: .init(0..<string.count), withTemplate: template)
+        (self as NSRegularExpression).stringByReplacingMatches(in: string, options: [], range: .init(0..<string.count), withTemplate: template)
     }
     
     public func replace(in string: String, with other: String) -> String {
-        return replace(in: string, withTemplate: NSRegularExpression.escapedTemplate(for: other))
+        replace(in: string, withTemplate: NSRegularExpression.escapedTemplate(for: other))
     }
 }
 
@@ -124,11 +96,11 @@ extension RegularExpression: AdditionOperatable {
     public static func + (lhs: RegularExpression, rhs: RegularExpression) -> RegularExpression {
         return .init(pattern: lhs.pattern.appending(rhs.pattern), options: lhs.options.union(rhs.options))
     }
-
+    
     public func append(_ expression: Self) -> Self {
         self + expression
     }
-
+    
     @inlinable
     public static func += (lhs: inout RegularExpression, rhs: RegularExpression) {
         lhs = lhs + rhs
@@ -175,8 +147,8 @@ extension RegularExpression: LosslessStringConvertible {
 }
 
 extension RegularExpression: ObjectiveCBridgeable {
-    public typealias ObjectiveCType = NSRegularExpression
-    
+    public typealias _ObjectiveCType = NSRegularExpression
+
     public static func bridgeFromObjectiveC(_ source: ObjectiveCType) throws -> Self {
         .init(pattern: source.pattern, options: source.options)
     }
@@ -186,19 +158,17 @@ extension RegularExpression: ObjectiveCBridgeable {
     }
 }
 
-extension RegularExpression: StringConvertible {
+extension RegularExpression: StringInitiable, StringRepresentable {
     public var stringValue: String {
-        return pattern
+        pattern
     }
-}
-
-extension RegularExpression: StringInitiable {
+    
     public init(stringValue: String) {
         self.init(pattern: stringValue)
     }
 }
 
-// MARK: - Helpers -
+// MARK: - API -
 
 infix operator =~: ComparisonPrecedence
 infix operator !~: ComparisonPrecedence
