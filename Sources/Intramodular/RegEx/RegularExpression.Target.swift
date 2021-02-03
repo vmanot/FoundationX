@@ -6,26 +6,42 @@ import Foundation
 import Swallow
 
 extension RegularExpression {
-    public enum Target {
-        case allEnglishAlphabets
-        case character(Character)
-        case string(String)
-        case zeroOrMore(String)
-        case oneOf([String])
-        case characterSet(CharacterSet)
-        case anything
-        case anythingNonGreedy
-        case anythingBut(String)
-        case something
-        case somethingBut(String)
+    public indirect enum Target {
         case startOfLine
         case endOfLine
-        case wordBoundary
-        case word
+        case singleCharacter
         case singleNumber
-        case number(digitsBetween: ClosedRange<Int>)
-        case lineBreak
+        case alphanumericCharacter
+        case englishAlphabet
+        case wordBoundary
         case tabSpace
+        case lineBreak
+        case character(Character)
+        case characterSet(CharacterSet)
+        case string(String)
+        
+        case zeroOrOne(Self)
+        case zeroOrMore(Self)
+        case oneOrMore(Self)
+        case nonGreedy(Self)
+        
+        case anyOneOf([RegularExpression])
+        case not(RegularExpression)
+        case notTheseCharacters(String)
+        
+        case digitsInRange(ClosedRange<Int>)
+
+        public static var anything: Self {
+            .zeroOrMore(.singleCharacter)
+        }
+        
+        public static var something: Self {
+            .oneOrMore(.singleCharacter)
+        }
+        
+        public static var word: Self {
+            .oneOrMore(.alphanumericCharacter)
+        }
     }
 }
 
@@ -42,44 +58,49 @@ extension RegularExpression.Target: ExpressibleByStringLiteral {
 extension RegularExpression.Target: RawValueConvertible {
     public var rawValue: String {
         switch self {
-            case .allEnglishAlphabets:
-                return "[A-Za-z]"
-            case .character(let value):
-                return String(value)
-            case .characterSet(let value):
-                return String(value.value)
-            case .string(let value):
-                return value.sanitizedForRegularExpression
-            case .zeroOrMore(let value):
-                return "(?:\(value.sanitizedForRegularExpression))*"
-            case .oneOf(let value):
-                return "(?:\(value.map({ $0.sanitizedForRegularExpression }).joined(separator: "|")))"
-            case .anything:
-                return ".*"
-            case .anythingNonGreedy:
-                return ".*?"
-            case .anythingBut(let value):
-                return "[^\(value.sanitizedForRegularExpression)]*"
-            case .something:
-                return ".+"
-            case .somethingBut(let value):
-                return "[^\(value.sanitizedForRegularExpression)]+"
             case .startOfLine:
                 return "^"
             case .endOfLine:
                 return "$"
-            case .wordBoundary:
-                return "\\b"
-            case .word:
-                return "\\w+"
+            case .singleCharacter:
+                return "."
             case .singleNumber:
                 return "\\d"
-            case .number(let range):
-                return "\\d{\(range.lowerBound),\(range.upperBound)}"
-            case .lineBreak:
-                return RegularExpression("\n").or(.init("\r\n")).stringValue
+            case .alphanumericCharacter:
+                return "\\w"
+            case .englishAlphabet:
+                return "[A-Za-z]"
+            case .wordBoundary:
+                return "\\b"
             case .tabSpace:
                 return "\t"
+            case .lineBreak:
+                return RegularExpression("\n").or(.init("\r\n")).stringValue
+            case .character(let value):
+                return String(value).sanitizedForRegularExpression
+            case .characterSet(let value):
+                return String(value.value).sanitizedForRegularExpression
+            case .string(let value):
+                return value.sanitizedForRegularExpression
+                
+            case .zeroOrOne(let target):
+                return target.rawValue + "?"
+            case .zeroOrMore(let target):
+                return target.rawValue + "*"
+            case .oneOrMore(let target):
+                return target.rawValue + "+"
+            case .nonGreedy(let target):
+                return target.rawValue + "?"
+                
+            case .anyOneOf(let expressions):
+                return "(?:".appending(expressions.map({ $0.groupIfNecessary().pattern }).joined(separator: "|")).appending(")")
+            case .not(let expression):
+                return "(?!".appending(expression.pattern).appending(")")
+            case .notTheseCharacters(let value):
+                return "[^\(value.sanitizedForRegularExpression)]"
+
+            case .digitsInRange(let range):
+                return "\\d{\(range.lowerBound),\(range.upperBound)}"
         }
     }
 }
@@ -101,37 +122,22 @@ extension RegularExpression {
     }
     
     public func or(_ target: RegularExpression.Target) -> RegularExpression {
-        or(RegEx.match(target))
+        or(RegularExpression().match(target))
     }
     
     public func match(_ options: [RegularExpression.Target]) -> RegularExpression {
-        RegularExpression.oneOf(options.map(RegEx.match(_:)))
-    }
-    
-    public func match(oneOf strings: String...) -> RegularExpression {
-        return match(.oneOf(strings))
-    }
-    
-    public func match(anyOf target: RegularExpression.Target) -> RegularExpression {
-        switch target {
-            case .string(let value):
-                return self + .init(pattern: "(?:[\(value.sanitizedForRegularExpression)])")
-            case .characterSet(let value):
-                return match(anyOf: .string(String(value.value)))
-            default:
-                fatalError(reason: .unimplemented)
-        }
-    }
-    
-    public func match(maybe target: RegularExpression.Target) -> RegularExpression {
-        self + "(?:\(target.rawValue))?"
+        RegularExpression.oneOf(options.map(RegularExpression().match(_:)))
     }
 }
 
 // MARK: - Helpers -
 
-extension String {
-    fileprivate var sanitizedForRegularExpression: String {
+fileprivate extension String {
+    var sanitizedForRegularExpression: String {
         NSRegularExpression.escapedPattern(for: self)
+    }
+    
+    func wrappedInNonCaptureGroup() -> String {
+        "(?:" + self + ")"
     }
 }

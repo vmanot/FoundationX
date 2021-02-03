@@ -5,11 +5,7 @@
 import Foundation
 import Swallow
 
-public var RegEx: RegularExpression {
-    return .init()
-}
-
-public struct RegularExpression: Initiable {    
+public struct RegularExpression: Initiable {
     public var pattern: String
     public var options: Options
     
@@ -31,7 +27,7 @@ public struct RegularExpression: Initiable {
     }
 }
 
-// MARK: - Extensions -
+// MARK: - Implementation -
 
 extension RegularExpression {
     public func matchAndCaptureRanges(in string: String, options: NSRegularExpression.MatchingOptions = []) -> [(Range<String.Index>, [Range<String.Index>?])] {
@@ -122,13 +118,13 @@ extension RegularExpression: AdditionOperatable {
 
 extension RegularExpression: CustomDebugStringConvertible {
     public var debugDescription: String {
-        return pattern.debugDescription
+        pattern.debugDescription
     }
 }
 
 extension RegularExpression: CustomStringConvertible {
     public var description: String {
-        return pattern.description
+        pattern.description
     }
 }
 
@@ -146,7 +142,7 @@ extension RegularExpression: LosslessStringConvertible {
 
 extension RegularExpression: ObjectiveCBridgeable {
     public typealias _ObjectiveCType = NSRegularExpression
-
+    
     public static func bridgeFromObjectiveC(_ source: ObjectiveCType) throws -> Self {
         .init(pattern: source.pattern, options: source.options)
     }

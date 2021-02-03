@@ -7,47 +7,35 @@ import Swallow
 
 extension RegularExpression {
     public func capture(
+        _ target: Target,
+        named name: String? = nil,
+        options: Options = []
+    ) -> Self {
+        capture(RegularExpression().match(target), named: name, options: options)
+    }
+    
+    public func capture(
         _ expression: Self,
         named name: String? = nil,
         options: Options = []
     ) -> Self {
         self + expression.captureGroup(named: name).options(options)
     }
+
+    public func capture(
+        _ name: String? = nil,
+        options: Options = [],
+        _ closure: () -> Self
+    ) -> Self {
+        capture(closure(), named: name, options: options)
+    }
     
     public func capture(
         _ name: String? = nil,
         options: Options = [],
-        _ closure: ((Self) -> Self)
+        _ closure: (Self) -> Self
     ) -> Self {
         capture(closure(.init()), named: name, options: options)
-    }
-    
-    public func capture(
-        _ option: Target,
-        named name: String? = nil,
-        options: Options = []
-    ) -> Self {
-        capture(RegEx.match(option), named: name, options: options)
-    }
-    
-    public func capture(oneOf strings: String...) -> Self {
-        capture(.oneOf(strings))
-    }
-    
-    public func capture(anyOf string: String) -> Self {
-        capture(RegEx.match(anyOf: .string(string)))
-    }
-    
-    public func capture(anyOf string: String, repeating count: Int) -> Self {
-        capture(RegEx.match(anyOf: .string(string)).repeating(count))
-    }
-    
-    public func capture(anyOf characterSet: CharacterSet) -> Self {
-        capture(RegEx.match(anyOf: .characterSet(characterSet)))
-    }
-    
-    public func capture(anyOf characterSet: CharacterSet, repeating count: Int) -> Self {
-        capture(RegEx.match(anyOf: .characterSet(characterSet)).repeating(count))
     }
 }
 
@@ -156,6 +144,10 @@ fileprivate extension NSRegularExpression {
 }
 
 extension RegularExpression {
+    var isCapturingGroupContained: Bool {
+        pattern.first == Character("(") && pattern.last == Character(")")
+    }
+    
     var isNonCapturingGroupContained: Bool {
         (pattern[try: 0..<3] == "(?:") && (pattern.last == Character(")"))
     }
@@ -180,6 +172,14 @@ extension RegularExpression {
                 "(".appending($0).appending(")")
             }
         }
+    }
+    
+    func groupIfNecessary() -> Self {
+        guard !isCapturingGroupContained && !isNonCapturingGroupContained else {
+            return self
+        }
+        
+        return nonCaptureGroup()
     }
     
     func decomposeNonCaptureGroupIfNecessary() -> Self {
