@@ -3,7 +3,6 @@
 //
 
 import Foundation
-import Swallow
 
 extension RegularExpression {
     public func capture(

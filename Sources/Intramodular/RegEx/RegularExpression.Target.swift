@@ -3,7 +3,6 @@
 //
 
 import Foundation
-import Swallow
 
 extension RegularExpression {
     public indirect enum Target {
@@ -30,7 +29,7 @@ extension RegularExpression {
         case notTheseCharacters(String)
         
         case digitsInRange(ClosedRange<Int>)
-
+        
         public static var anything: Self {
             .zeroOrMore(.singleCharacter)
         }
@@ -55,7 +54,7 @@ extension RegularExpression.Target: ExpressibleByStringLiteral {
     }
 }
 
-extension RegularExpression.Target: RawValueConvertible {
+extension RegularExpression.Target {
     public var rawValue: String {
         switch self {
             case .startOfLine:
@@ -98,7 +97,7 @@ extension RegularExpression.Target: RawValueConvertible {
                 return "(?!".appending(expression.pattern).appending(")")
             case .notTheseCharacters(let value):
                 return "[^\(value.sanitizedForRegularExpression)]"
-
+                
             case .digitsInRange(let range):
                 return "\\d{\(range.lowerBound),\(range.upperBound)}"
         }
