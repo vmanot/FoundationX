@@ -21,7 +21,7 @@ extension RegularExpression {
     ) -> Self {
         self + expression.captureGroup(named: name).options(options)
     }
-
+    
     public func capture(
         _ name: String? = nil,
         options: Options = [],
@@ -102,7 +102,56 @@ extension RegularExpression {
     }
 }
 
+extension RegularExpression {
+    func nonCaptureGroup() -> Self {
+        guard !pattern.isEmpty, !isNonCaptureGroupContained else {
+            return self
+        }
+        
+        return modifyPattern { pattern in
+            "(?:" + pattern + ")"
+        }
+    }
+    
+    func captureGroup(named name: String?) -> Self {
+        return decomposeNonCaptureGroupIfNecessary().modifyPattern {
+            "(".appending(name.map({ "?<\($0)>" }) ?? "").appending($0).appending(")")
+        }
+    }
+    
+    func groupIfNecessary() -> Self {
+        guard !isCaptureGroupContained else {
+            return self
+        }
+        
+        return nonCaptureGroup()
+    }
+}
+
 // MARK: - Auxiliary Implementation -
+
+fileprivate extension RegularExpression {
+    var isCaptureGroupContained: Bool {
+        pattern.first == Character("(") && pattern.last == Character(")")
+    }
+    
+    var isNonCaptureGroupContained: Bool {
+        (pattern[try: 0..<3] == "(?:") && (pattern.last == Character(")"))
+    }
+    
+    func decomposeNonCaptureGroupIfNecessary() -> Self {
+        guard isNonCaptureGroupContained else {
+            return self
+        }
+        
+        var pattern = self.pattern
+        
+        pattern.remove(at: pattern.lastIndex)
+        pattern.removeFirst(3)
+        
+        return .init(pattern: pattern)
+    }
+}
 
 fileprivate extension NSRegularExpression {
     typealias GroupNamesSearchResult = (NSTextCheckingResult, NSTextCheckingResult, index: Int)
@@ -140,58 +189,5 @@ fileprivate extension NSRegularExpression {
         }
         
         return result
-    }
-}
-
-extension RegularExpression {
-    var isCapturingGroupContained: Bool {
-        pattern.first == Character("(") && pattern.last == Character(")")
-    }
-    
-    var isNonCapturingGroupContained: Bool {
-        (pattern[try: 0..<3] == "(?:") && (pattern.last == Character(")"))
-    }
-    
-    func nonCaptureGroup() -> Self {
-        guard pattern != "", isValid, !isNonCapturingGroupContained else {
-            return self
-        }
-        
-        return modifyPattern { pattern in
-            "(?:" + pattern + ")"
-        }
-    }
-    
-    func captureGroup(named name: String?) -> Self {
-        if let name = name {
-            return decomposeNonCaptureGroupIfNecessary().modifyPattern {
-                "(".appending("?<\(name)>").appending($0).appending(")")
-            }
-        } else {
-            return decomposeNonCaptureGroupIfNecessary().modifyPattern {
-                "(".appending($0).appending(")")
-            }
-        }
-    }
-    
-    func groupIfNecessary() -> Self {
-        guard !isCapturingGroupContained && !isNonCapturingGroupContained else {
-            return self
-        }
-        
-        return nonCaptureGroup()
-    }
-    
-    func decomposeNonCaptureGroupIfNecessary() -> Self {
-        guard isNonCapturingGroupContained else {
-            return self
-        }
-        
-        var pattern = self.pattern
-        
-        pattern.remove(at: pattern.lastIndex)
-        pattern.removeFirst(3)
-        
-        return .init(pattern: pattern)
     }
 }

@@ -64,16 +64,25 @@ extension String {
         self = replacing(expression, with: other)
     }
     
-    public func replacing(_ expression: RegularExpression, with other: String) -> String {
-        expression.replace(in: self, with: other)
+    public func replacing(
+        _ expression: RegularExpression,
+        with other: String
+    ) -> String {
+        replacing(expression, withTemplate: NSRegularExpression.escapedTemplate(for: other))
     }
     
-    public mutating func replace(_ expression: RegularExpression, withTemplate template: String) {
+    public mutating func replace(
+        _ expression: RegularExpression,
+        withTemplate template: String
+    ) {
         self = replacing(expression, withTemplate: template)
     }
     
-    public func replacing(_ expression: RegularExpression, withTemplate template: String) -> String {
-        expression.replace(in: self, withTemplate: template)
+    public func replacing(
+        _ expression: RegularExpression,
+        withTemplate template: String
+    ) -> String {
+        (expression as NSRegularExpression).stringByReplacingMatches(in: self, options: [], range: .init(0..<count), withTemplate: template)
     }
 }
 

@@ -9,10 +9,6 @@ public struct RegularExpression: Initiable {
     public var pattern: String
     public var options: Options
     
-    public var isValid: Bool {
-        return (try? NSRegularExpression(pattern: pattern, options: options)).isNotNil
-    }
-    
     public init(pattern: String = "", options: Options = []) {
         self.pattern = pattern
         self.options = options
@@ -20,6 +16,16 @@ public struct RegularExpression: Initiable {
     
     public init() {
         self.init(pattern: .init())
+    }
+}
+
+extension RegularExpression {
+    public var isEmpty: Bool {
+        pattern.isEmpty
+    }
+    
+    public var isValid: Bool {
+        return (try? NSRegularExpression(pattern: pattern, options: options)).isNotNil
     }
     
     func modifyPattern(_ modify: (String) -> String) -> Self {
@@ -30,6 +36,12 @@ public struct RegularExpression: Initiable {
 // MARK: - Implementation -
 
 extension RegularExpression {
+    public func matchRanges(in string: String) -> [Range<String.Index>] {
+        (self as NSRegularExpression)
+            .matches(in: string, range: string.nsRangeBounds)
+            .map({ Range($0.range, in: string)! })
+    }
+    
     public func matchAndCaptureRanges(in string: String, options: NSRegularExpression.MatchingOptions = []) -> [(Range<String.Index>, [Range<String.Index>?])] {
         var result = [(Range<String.Index>, [Range<String.Index>?])]()
         
@@ -65,21 +77,34 @@ extension RegularExpression {
     }
 }
 
-extension RegularExpression {
-    public func matchRanges(in string: String) -> [Range<String.Index>] {
-        (self as NSRegularExpression)
-            .matches(in: string, range: string.nsRangeBounds)
-            .map({ Range($0.range, in: string)! })
-    }
-}
+// MARK: - API -
 
 extension RegularExpression {
-    public func replace(in string: String, withTemplate template: String) -> String {
-        (self as NSRegularExpression).stringByReplacingMatches(in: string, options: [], range: .init(0..<string.count), withTemplate: template)
+    public static func oneOf(_ expressions: [Self]) -> Self {
+        Self(
+            pattern: expressions.map({ $0.groupIfNecessary().pattern }).separated(by: "|").joined(),
+            options: expressions.reduce([], { $0.union($1.options) })
+        )
+        .groupIfNecessary()
     }
     
-    public func replace(in string: String, with other: String) -> String {
-        replace(in: string, withTemplate: NSRegularExpression.escapedTemplate(for: other))
+    public func or(_ expression: Self) -> Self {
+        self.nonCaptureGroup()
+            .modifyPattern({ $0.appending("|") })
+            .append(expression)
+            .nonCaptureGroup()
+    }
+    
+    public func `repeat`(_ count: Int) -> Self {
+        groupIfNecessary().modifyPattern({ $0.appending("{\(count)}") })
+    }
+    
+    public func `repeat`() -> Self {
+        groupIfNecessary().modifyPattern({ $0.appending("+") })
+    }
+    
+    public func optional() -> Self {
+        groupIfNecessary().modifyPattern({ $0.appending("?") })
     }
 }
 
