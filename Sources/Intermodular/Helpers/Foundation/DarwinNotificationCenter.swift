@@ -48,7 +48,12 @@ public final class DarwinNotificationCenter {
             fatalError("Invalid CFNotificationCenter")
         }
         
-        CFNotificationCenterPostNotification(cfNotificationCenter, CFNotificationName(rawValue: name.rawValue as CFString), nil, nil, false)
+        CFNotificationCenterPostNotification(
+            cfNotificationCenter, CFNotificationName(rawValue: name.rawValue as CFString),
+            nil,
+            nil,
+            false
+        )
     }
     
     public func publisher(for name: DarwinNotification.Name) -> Publisher {
