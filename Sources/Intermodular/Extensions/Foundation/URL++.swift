@@ -21,7 +21,15 @@ extension URL {
         
         self = url
     }
-    
+}
+
+extension URL {
+    public func appendingDirectoryPathComponent(_ pathComponent: String) -> URL {
+        appendingPathComponent(pathComponent, isDirectory: true)
+    }
+}
+
+extension URL {
     public mutating func setResourceValues(_ body: (inout URLResourceValues) throws -> Void) throws {
         var values = URLResourceValues()
         

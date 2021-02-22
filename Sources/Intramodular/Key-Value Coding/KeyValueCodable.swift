@@ -106,11 +106,19 @@ extension UInt64: PrimitiveKeyValueCodable {
 }
 
 extension URL: KeyValueCodable {
-    static func decode(from coder: KeyValueCoder, forKey key: String) throws -> Self {
-        try URL(string: try String.decode(from: coder, forKey: key)).unwrap()
+    public static func decode(from coder: KeyValueCoder, forKey key: String) throws -> Self {
+        if let coder = coder as? UserDefaults {
+            return try coder.url(forKey: key).unwrap()
+        } else {
+            return try URL(string: try String.decode(from: coder, forKey: key)).unwrap()
+        }
     }
     
     public func encode(to coder: KeyValueCoder, forKey key: String) throws {
-        coder.setValue(path, forKey: key)
+        if let coder = coder as? UserDefaults {
+            coder.set(self, forKey: key)
+        } else {
+            coder.setValue(path, forKey: key) // FIXME!!!
+        }
     }
 }

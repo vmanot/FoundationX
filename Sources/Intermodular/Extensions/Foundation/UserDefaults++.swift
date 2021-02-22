@@ -41,8 +41,8 @@ extension UserDefaults {
         
         if let value = value as? KeyValueCodable {
             try value.encode(to: self, forKey: key)
-        } else if let value = value as? URL {
-            setValue(value.path, forKey: key)
+        } else if let url = value as? URL {
+            set(url, forKey: key)
         } else {
             setValue(try PropertyListEncoder().encode(value), forKey: key)
         }

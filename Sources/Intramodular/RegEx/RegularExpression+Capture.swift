@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import Swallow
 
 extension RegularExpression {
     public func capture(
@@ -103,7 +104,7 @@ extension RegularExpression {
 
 extension RegularExpression {
     func nonCaptureGroup() -> Self {
-        guard !pattern.isEmpty, !isNonCaptureGroupContained else {
+        guard !pattern.isEmpty, !(compoundContainerType == .nonCapturing) else {
             return self
         }
         
@@ -119,7 +120,7 @@ extension RegularExpression {
     }
     
     func groupIfNecessary() -> Self {
-        guard !isCaptureGroupContained else {
+        guard compoundContainerType == nil else {
             return self
         }
         
@@ -130,16 +131,23 @@ extension RegularExpression {
 // MARK: - Auxiliary Implementation -
 
 fileprivate extension RegularExpression {
-    var isCaptureGroupContained: Bool {
-        pattern.first == Character("(") && pattern.last == Character(")")
+    enum CompoundContainerType {
+        case nonCapturing
+        case capturing
     }
     
-    var isNonCaptureGroupContained: Bool {
-        (pattern[try: 0..<3] == "(?:") && (pattern.last == Character(")"))
+    var compoundContainerType: CompoundContainerType? {
+        if pattern.count >= 3, (pattern[try: pattern.startIndex..<pattern.index(pattern.startIndex, offsetBy: 3)] == "(?:") && (pattern.last == Character(")")) {
+            return .nonCapturing
+        } else if pattern.first == Character("(") && pattern.last == Character(")") {
+            return .capturing
+        } else {
+            return nil
+        }
     }
     
     func decomposeNonCaptureGroupIfNecessary() -> Self {
-        guard isNonCaptureGroupContained else {
+        guard compoundContainerType == .nonCapturing else {
             return self
         }
         
@@ -156,37 +164,39 @@ fileprivate extension NSRegularExpression {
     typealias GroupNamesSearchResult = (NSTextCheckingResult, NSTextCheckingResult, index: Int)
     
     func textCheckingResultsOfNamedCaptureGroups() -> [String: GroupNamesSearchResult] {
-        var result = [String: GroupNamesSearchResult]()
-        
-        let greg = try! NSRegularExpression(pattern: "^\\(\\?<([\\w\\a_-]*)>$", options: NSRegularExpression.Options.dotMatchesLineSeparators)
-        let reg = try! NSRegularExpression(pattern: "\\(.*?>", options: NSRegularExpression.Options.dotMatchesLineSeparators)
-        
-        let m = reg.matches(
-            in: pattern,
-            options: NSRegularExpression.MatchingOptions.withTransparentBounds,
-            range: NSRange(location: 0, length: pattern.utf16.count)
-        )
-        
-        var counter: Int = 0
-        
-        for (n, g) in m.enumerated() {
-            let r = Range(g.range(at: 0), in: pattern)
-            let gstring = String(pattern[r!])
+        TODO.whole(.refactor) {
+            var result = [String: GroupNamesSearchResult]()
             
-            let gmatch = greg.matches(
-                in: gstring,
-                options: NSRegularExpression.MatchingOptions.anchored,
-                range: NSRange(location: 0, length: gstring.utf16.count)
+            let greg = try! NSRegularExpression(pattern: "^\\(\\?<([\\w\\a_-]*)>$", options: NSRegularExpression.Options.dotMatchesLineSeparators)
+            let reg = try! NSRegularExpression(pattern: "\\(.*?>", options: NSRegularExpression.Options.dotMatchesLineSeparators)
+            
+            let m = reg.matches(
+                in: pattern,
+                options: NSRegularExpression.MatchingOptions.withTransparentBounds,
+                range: NSRange(location: 0, length: pattern.utf16.count)
             )
             
-            if gmatch.count > 0 {
-                let r2 = Range(gmatch[0].range(at: 1), in: gstring)!
-                result[String(gstring[r2])] = (g, gmatch[0], n + counter)
-            } else {
-                counter -= 1
+            var counter: Int = 0
+            
+            for (n, g) in m.enumerated() {
+                let r = Range(g.range(at: 0), in: pattern)
+                let gstring = String(pattern[r!])
+                
+                let gmatch = greg.matches(
+                    in: gstring,
+                    options: NSRegularExpression.MatchingOptions.anchored,
+                    range: NSRange(location: 0, length: gstring.utf16.count)
+                )
+                
+                if gmatch.count > 0 {
+                    let r2 = Range(gmatch[0].range(at: 1), in: gstring)!
+                    result[String(gstring[r2])] = (g, gmatch[0], n + counter)
+                } else {
+                    counter -= 1
+                }
             }
+            
+            return result
         }
-        
-        return result
     }
 }

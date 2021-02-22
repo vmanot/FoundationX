@@ -38,12 +38,12 @@ extension String {
         matchAndCaptureRanges(with: expression).map({ (self[$0.0], $0.1.optionalMap({ self[$0] })) })
     }
     
-    public func matchSubstrings(with expression: RegularExpression) -> [Substring] {
+    public func substrings(matchedBy expression: RegularExpression) -> [Substring] {
         matchRanges(with: expression).map({ self[$0] })
     }
     
-    public func matchStrings(with expression: RegularExpression) -> [String] {
-        matchSubstrings(with: expression).map(String.init)
+    public func strings(matchedBy expression: RegularExpression) -> [String] {
+        substrings(matchedBy: expression).map(String.init)
     }
     
     public func captureSubstrings(with expression: RegularExpression) -> [[Substring?]] {
