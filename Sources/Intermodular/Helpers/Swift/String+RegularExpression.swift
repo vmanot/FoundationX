@@ -6,22 +6,28 @@ import Foundation
 import Swallow
 
 extension String {
+    public func ranges(matchedBy expression: RegularExpression) -> [Range<String.Index>] {
+        expression.matchRanges(in: self)
+    }
+    
+    public func nsRanges(matchedBy expression: RegularExpression) -> [NSRange] {
+        (expression as NSRegularExpression).matches(in: self, range: nsRangeBounds).map({ $0.range })
+    }
+}
+
+extension String {
     public func matches(_ expression: RegularExpression) -> Bool {
-        !matchRanges(with: expression).isEmpty
+        !ranges(matchedBy: expression).isEmpty
     }
     
     public func matches(theWholeOf expression: RegularExpression) -> Bool {
-        matchRanges(with: expression).find({ $0 == self.bounds }) != nil
+        ranges(matchedBy: expression).find({ $0 == self.bounds }) != nil
     }
 }
 
 extension String {
     public func matchAndCaptureRanges(with expression: RegularExpression) -> [(Range<String.Index>, [Range<String.Index>?])] {
         expression.matchAndCaptureRanges(in: self)
-    }
-    
-    public func matchRanges(with expression: RegularExpression) -> [Range<String.Index>] {
-        expression.matchRanges(in: self)
     }
     
     public func captureRanges(with expression: RegularExpression) -> [[Range<String.Index>?]] {
@@ -39,7 +45,7 @@ extension String {
     }
     
     public func substrings(matchedBy expression: RegularExpression) -> [Substring] {
-        matchRanges(with: expression).map({ self[$0] })
+        ranges(matchedBy: expression).map({ self[$0] })
     }
     
     public func strings(matchedBy expression: RegularExpression) -> [String] {

@@ -12,10 +12,27 @@ public struct UserDefault<Value: Codable> {
     public let defaultValue: Value
     public let store: UserDefaults
     
+    @ReferenceBox
+    private var _cachedValue: Value? = nil
+    
     public var wrappedValue: Value {
         get {
-            try! store.decode(Value.self, forKey: key) ?? defaultValue
-        } set {
+            do {
+                if let value = _cachedValue {
+                    return value
+                }
+                
+                _cachedValue = try store.decode(Value.self, forKey: key) ?? defaultValue
+                
+                return _cachedValue!
+            } catch {
+                store.removeObject(forKey: key)
+                
+                return defaultValue
+            }
+        } nonmutating set {
+            _cachedValue = newValue
+            
             try! store.encode(newValue, forKey: key)
         }
     }
@@ -53,9 +70,9 @@ extension UserDefault {
             get {
                 object[keyPath: storageKeyPath].wrappedValue
             } set {
-                object.objectWillChange.send()
-                
                 object[keyPath: storageKeyPath].wrappedValue = newValue
+                
+                object.objectWillChange.send()
             }
         }
         
