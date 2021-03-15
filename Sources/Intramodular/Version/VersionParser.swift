@@ -63,7 +63,7 @@ public struct VersionParser {
     }
     
     public func parse(string: String) throws -> Version {
-        return try self.parse(components: string.captureFirstStrings(with: versionRegex))
+        try parse(components: string.strings(firstCapturedBy: versionRegex))
     }
     
     public func parse(components: [String?]) throws -> Version {

@@ -52,16 +52,16 @@ extension String {
         substrings(matchedBy: expression).map(String.init)
     }
     
-    public func captureSubstrings(with expression: RegularExpression) -> [[Substring?]] {
+    public func strings(capturedBy expression: RegularExpression) -> [[Substring?]] {
         captureRanges(with: expression).map({ $0.optionalMap({ self[$0] }) })
     }
     
-    public func captureFirstSubstrings(with expression: RegularExpression) -> [Substring?] {
+    public func substrings(firstCapturedBy expression: RegularExpression) -> [Substring?] {
         captureFirstRanges(with: expression).optionalMap({ self[$0] })
     }
     
-    public func captureFirstStrings(with expression: RegularExpression) -> [String?] {
-        captureFirstSubstrings(with: expression).optionalMap(String.init)
+    public func strings(firstCapturedBy expression: RegularExpression) -> [String?] {
+        substrings(firstCapturedBy: expression).optionalMap(String.init)
     }
 }
 
