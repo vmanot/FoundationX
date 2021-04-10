@@ -93,7 +93,10 @@ extension String {
 }
 
 extension String {
-    public mutating func replaceSubstrings(_ substrings: [Substring], with newSubstrings: [Substring]) {
+    public mutating func replaceSubstrings(
+        _ substrings: [Substring],
+        with newSubstrings: [Substring]
+    ) {
         replaceSubranges(substrings.lazy.map({ $0.bounds }), with: newSubstrings)
     }
     
