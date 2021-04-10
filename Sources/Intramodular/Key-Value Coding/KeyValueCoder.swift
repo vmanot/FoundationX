@@ -18,7 +18,7 @@ extension KeyValueCoder {
     }
 }
 
-// MARK: - Protocol Conformances -
+// MARK: - Conformances -
 
 #if canImport(CloudKit)
 

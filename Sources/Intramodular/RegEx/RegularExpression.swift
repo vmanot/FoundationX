@@ -108,7 +108,7 @@ extension RegularExpression {
     }
 }
 
-// MARK: - Protocol Conformances -
+// MARK: - Conformances -
 
 extension RegularExpression: AdditionOperatable {
     @inlinable

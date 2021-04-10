@@ -8,9 +8,14 @@ import Swallow
 public struct SortDescriptor: Codable, Hashable {
     public let keyPath: String
     public let direction: SortDirection
+    
+    public init(keyPath: String, direction: SortDirection) {
+        self.keyPath = keyPath
+        self.direction = direction
+    }
 }
 
-// MARK: - Protocol Conformances -
+// MARK: - Conformances -
 
 extension SortDescriptor: ObjectiveCBridgeable {
     public typealias _ObjectiveCType = NSSortDescriptor

@@ -44,7 +44,7 @@ extension RegularExpression {
     }
 }
 
-// MARK: - Protocol Conformances -
+// MARK: - Conformances -
 
 extension RegularExpression.Target: ExpressibleByStringLiteral {
     public typealias StringLiteralType = String

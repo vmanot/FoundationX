@@ -52,7 +52,7 @@ extension Calendar {
     }
 }
 
-// MARK: - Protocol Conformances -
+// MARK: - Conformances -
 
 extension Calendar.Date: CustomStringConvertible {
     public var description: String {

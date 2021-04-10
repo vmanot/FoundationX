@@ -141,7 +141,7 @@ extension Version {
     }
 }
 
-// MARK: - Protocol Conformances -
+// MARK: - Conformances -
 
 extension Version: Codable {
     
