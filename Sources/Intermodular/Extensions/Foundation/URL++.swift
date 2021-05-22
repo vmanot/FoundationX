@@ -24,6 +24,25 @@ extension URL {
 }
 
 extension URL {
+    /// The portion of a URL relative to a given base URL.
+    public func relativeString(relativeTo baseURL: URL) -> String {
+        TODO.whole(.addressEdgeCase, .refactor)
+
+        if absoluteString.hasPrefix(baseURL.absoluteString) {
+            return absoluteString
+                .dropPrefixIfPresent(baseURL.absoluteString)
+                .dropPrefixIfPresent("/")
+        } else if let host = baseURL.url.host, absoluteString.hasPrefix(host) {
+            return absoluteString
+                .dropPrefixIfPresent(host)
+                .dropPrefixIfPresent("/")
+        } else {
+            return relativeString
+        }
+    }
+}
+
+extension URL {
     public func appendingDirectoryPathComponent(_ pathComponent: String) -> URL {
         appendingPathComponent(pathComponent, isDirectory: true)
     }
