@@ -5,6 +5,9 @@
 import Combine
 import Foundation
 import Swallow
+#if canImport(SwiftUI)
+import SwiftUI
+#endif
 
 @propertyWrapper
 public struct UserDefault<Value: Codable> {
@@ -47,8 +50,23 @@ public struct UserDefault<Value: Codable> {
         self.store = store
     }
     
+    public init<Key: UserDefaultKey>(
+        _ key: Key,
+        default defaultValue: Value,
+        store: UserDefaults = .standard
+    ) {
+        self.init(key.stringValue, default: defaultValue, store: store)
+    }
+    
     public init<T>(
         _ key: String,
+        store: UserDefaults = .standard
+    ) where Value == Optional<T> {
+        self.init(key, default: .none, store: store)
+    }
+    
+    public init<Key: UserDefaultKey, T>(
+        _ key: Key,
         store: UserDefaults = .standard
     ) where Value == Optional<T> {
         self.init(key, default: .none, store: store)
@@ -92,3 +110,48 @@ extension UserDefault {
         }
     }
 }
+
+// MARK: - Auxiliary Implementation -
+
+/// A type that can be used as a key for encoding and decoding.
+public protocol UserDefaultKey: CodingKey {
+    
+}
+
+#if canImport(SwiftUI)
+@available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
+extension AppStorage {
+    public init<Key: UserDefaultKey>(wrappedValue: Value, _ key: Key, store: UserDefaults? = nil) where Value == Bool {
+        self.init(wrappedValue: wrappedValue, key.stringValue, store: store)
+    }
+    
+    public init<Key: UserDefaultKey>(wrappedValue: Value, _ key: Key, store: UserDefaults? = nil) where Value == Int {
+        self.init(wrappedValue: wrappedValue, key.stringValue, store: store)
+    }
+    
+    public init<Key: UserDefaultKey>(wrappedValue: Value, _ key: Key, store: UserDefaults? = nil) where Value == Double {
+        self.init(wrappedValue: wrappedValue, key.stringValue, store: store)
+    }
+    
+    public init<Key: UserDefaultKey>(wrappedValue: Value, _ key: Key, store: UserDefaults? = nil) where Value == String {
+        self.init(wrappedValue: wrappedValue, key.stringValue, store: store)
+    }
+    
+    public init<Key: UserDefaultKey>(wrappedValue: Value, _ key: Key, store: UserDefaults? = nil) where Value == URL {
+        self.init(wrappedValue: wrappedValue, key.stringValue, store: store)
+    }
+    
+    public init<Key: UserDefaultKey>(wrappedValue: Value, _ key: Key, store: UserDefaults? = nil) where Value == Data {
+        self.init(wrappedValue: wrappedValue, key.stringValue, store: store)
+    }
+    
+    public init<Key: UserDefaultKey>(wrappedValue: Value, _ key: Key, store: UserDefaults? = nil) where Value: RawRepresentable, Value.RawValue == Int {
+        self.init(wrappedValue: wrappedValue, key.stringValue, store: store)
+    }
+    
+    public init<Key: UserDefaultKey>(wrappedValue: Value, _ key: Key, store: UserDefaults? = nil) where Value: RawRepresentable, Value.RawValue == String {
+        self.init(wrappedValue: wrappedValue, key.stringValue, store: store)
+    }
+}
+
+#endif

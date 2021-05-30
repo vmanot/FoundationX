@@ -269,8 +269,6 @@ extension Bundle {
 
 extension ProcessInfo {
     /// The version of the operating system on which the process is executing.
-    @available(OSX, introduced: 10.10)
-    @available(iOS, introduced: 8.0)
     public var operationSystemVersion: Version {
         return Version(
             major: operatingSystemVersion.majorVersion,
