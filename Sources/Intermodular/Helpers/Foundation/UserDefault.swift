@@ -102,8 +102,23 @@ extension UserDefault {
             self._wrappedValue = .init(key, default: wrappedValue, store: store)
         }
         
+        public init<Key: UserDefaultKey>(
+            wrappedValue: Value,
+            _ key: Key,
+            store: UserDefaults = .standard
+        ) {
+            self.init(wrappedValue: wrappedValue, key.stringValue, store: store)
+        }
+        
         public init<T>(
             _ key: String,
+            store: UserDefaults = .standard
+        ) where Value == Optional<T> {
+            self.init(wrappedValue: .none, key, store: store)
+        }
+        
+        public init<Key: UserDefaultKey, T>(
+            _ key: Key,
             store: UserDefaults = .standard
         ) where Value == Optional<T> {
             self.init(wrappedValue: .none, key, store: store)
