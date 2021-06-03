@@ -11,7 +11,9 @@ public protocol Caching {
     var cache: Cache { get }
 }
 
-private var Caching_cache_objcAssociationKey: Void = ()
+// MARK: - Implementation -
+
+private var Caching_cache_objcAssociationKey: UInt = 0
 
 extension Caching where Self: AnyObject, Cache: Initiable {
     public var cache: Cache {
