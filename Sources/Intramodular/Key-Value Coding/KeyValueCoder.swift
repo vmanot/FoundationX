@@ -22,7 +22,7 @@ extension KeyValueCoder {
 
 #if canImport(CloudKit)
 
-import CoreData
+import CloudKit
 
 extension CKRecord: KeyValueCoder {
     

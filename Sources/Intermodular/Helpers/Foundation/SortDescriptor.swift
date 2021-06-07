@@ -5,7 +5,7 @@
 import Foundation
 import Swallow
 
-public struct SortDescriptor: Codable, Hashable {
+public struct AnySortDescriptor: Codable, Hashable {
     public let keyPath: String
     public let direction: SortDirection
     
@@ -17,7 +17,7 @@ public struct SortDescriptor: Codable, Hashable {
 
 // MARK: - Conformances -
 
-extension SortDescriptor: ObjectiveCBridgeable {
+extension AnySortDescriptor: ObjectiveCBridgeable {
     public typealias _ObjectiveCType = NSSortDescriptor
     public typealias ObjectiveCType = NSSortDescriptor
     
