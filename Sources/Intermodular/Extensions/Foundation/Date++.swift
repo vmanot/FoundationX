@@ -20,6 +20,19 @@ extension Date {
             .then({ $0.dateFormat = format })
             .string(from: self)
     }
+    
+    /// Convert this date to a `String` given a certain format.
+    public func toString(
+        dateStyle: DateFormatter.Style,
+        timeStyle: DateFormatter.Style
+    ) -> String {
+        let formatter = DateFormatter()
+        
+        formatter.dateStyle = dateStyle
+        formatter.timeStyle = timeStyle
+        
+        return formatter.string(from: self)
+    }
 }
 
 extension Date {
