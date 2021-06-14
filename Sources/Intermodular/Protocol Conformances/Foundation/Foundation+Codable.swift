@@ -5,7 +5,7 @@
 import Foundation
 import Swift
 
-extension Calendar.Component: RawRepresentable, Codable {
+extension Calendar.Component: Codable, RawRepresentable {
     public var rawValue: String {
         switch self {
             case .era:
