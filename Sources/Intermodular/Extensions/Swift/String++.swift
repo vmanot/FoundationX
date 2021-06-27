@@ -30,3 +30,13 @@ extension String {
         return self[start..<end]
     }
 }
+
+extension String {
+    public func contains(only characterSet: CharacterSet) -> Bool {
+        CharacterSet(charactersIn: self).isSubset(of: characterSet)
+    }
+    
+    public func removingCharacters(in characterSet: CharacterSet) -> String {
+        String(String.UnicodeScalarView(unicodeScalars.filter({ !characterSet.contains($0) })))
+    }
+}
