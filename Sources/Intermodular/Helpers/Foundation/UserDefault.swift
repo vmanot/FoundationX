@@ -79,6 +79,10 @@ extension UserDefault {
         @UserDefault
         public var wrappedValue: Value
         
+        public var projectedValue: Published {
+            self
+        }
+        
         @inlinable
         public static subscript<EnclosingSelf: ObservableObject>(
             _enclosingInstance object: EnclosingSelf,
@@ -122,6 +126,12 @@ extension UserDefault {
             store: UserDefaults = .standard
         ) where Value == Optional<T> {
             self.init(wrappedValue: .none, key, store: store)
+        }
+        
+        public func synchronize() {
+            self.wrappedValue = wrappedValue
+            
+            self._wrappedValue.store.synchronize()
         }
     }
 }
