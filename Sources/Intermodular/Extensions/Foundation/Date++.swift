@@ -36,30 +36,8 @@ extension Date {
 }
 
 extension Date {
-    public var startOfDay: Date {
-        return Calendar.current.startOfDay(for: self)
-    }
-    
-    public var endOfDay: Date {
-        var components = DateComponents()
-        
-        components.day = 1
-        components.second = -1
-        
-        return Calendar.current.date(byAdding: components, to: startOfDay)!
-    }
-    
-    public var startOfMonth: Date {
-        Calendar.current.date(from: startOfDay.get(.year, .month))!
-    }
-    
-    public var endOfMonth: Date {
-        var components = DateComponents()
-        
-        components.month = 1
-        components.second = -1
-        
-        return Calendar.current.date(byAdding: components, to: startOfMonth)!
+    public func currentDateComponents() -> DateComponents {
+        Calendar.current.dateComponents(in: .current, from: self)
     }
     
     public func get(
@@ -87,6 +65,34 @@ extension Date {
     
     public func seconds(from other: Date) -> Int {
         return Calendar.current.dateComponents([.second], from: other, to: self).second ?? 0
+    }
+}
+
+extension Date {
+    public var startOfDay: Date {
+        return Calendar.current.startOfDay(for: self)
+    }
+    
+    public var endOfDay: Date {
+        var components = DateComponents()
+        
+        components.day = 1
+        components.second = -1
+        
+        return Calendar.current.date(byAdding: components, to: startOfDay)!
+    }
+    
+    public var startOfMonth: Date {
+        Calendar.current.date(from: startOfDay.get(.year, .month))!
+    }
+    
+    public var endOfMonth: Date {
+        var components = DateComponents()
+        
+        components.month = 1
+        components.second = -1
+        
+        return Calendar.current.date(byAdding: components, to: startOfMonth)!
     }
 }
 
