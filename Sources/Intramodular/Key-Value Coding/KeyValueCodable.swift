@@ -53,6 +53,10 @@ extension Bool: PrimitiveKeyValueCodable {
     
 }
 
+extension Date: PrimitiveKeyValueCodable {
+    
+}
+
 extension Double: PrimitiveKeyValueCodable {
     
 }
