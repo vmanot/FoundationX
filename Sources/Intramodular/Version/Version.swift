@@ -6,6 +6,10 @@ import Foundation
 import Swallow
 
 public struct Version {
+    public static var zero: Version {
+        .init(major: 0, minor: nil, patch: nil, prerelease: nil, build: nil)
+    }
+    
     fileprivate static let strictParser = VersionParser(strict: true)
     fileprivate static let lenientParser = VersionParser(strict: false)
     
