@@ -50,6 +50,14 @@ public struct UserDefault<Value: Codable> {
         self.store = store
     }
     
+    public init(
+        wrappedValue: Value,
+        _ key: String,
+        store: UserDefaults = .standard
+    ) {
+        self = .init(key, default: wrappedValue, store: store)
+    }
+    
     public init<Key: UserDefaultKey>(
         _ key: Key,
         default defaultValue: Value,
