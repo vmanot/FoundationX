@@ -9,6 +9,9 @@ import Swallow
 import SwiftUI
 #endif
 
+/// A property wrapper that to handle coding values to and from `UserDefaults`.
+///
+/// `@UserDefault.Published` offers a version of this property wrapper that publishes changes on a parent `ObservableObject`.
 @propertyWrapper
 public struct UserDefault<Value: Codable> {
     public let key: String
@@ -79,6 +82,11 @@ public struct UserDefault<Value: Codable> {
     ) where Value == Optional<T> {
         self.init(key, default: .none, store: store)
     }
+    
+    /// Force a save to the underlying store.
+    public func save() {
+        self.wrappedValue = wrappedValue
+    }
 }
 
 extension UserDefault {
@@ -136,10 +144,14 @@ extension UserDefault {
             self.init(wrappedValue: .none, key, store: store)
         }
         
+        @available(*, deprecated, renamed: "save")
         public func synchronize() {
+            save()
+        }
+        
+        /// Force a save to the underlying store.
+        public func save() {
             self.wrappedValue = wrappedValue
-            
-            self._wrappedValue.store.synchronize()
         }
     }
 }
