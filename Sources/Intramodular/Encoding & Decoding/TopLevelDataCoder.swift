@@ -5,8 +5,9 @@
 import Combine
 
 /// A type that defines methods for encoding & decoding data.
-public protocol TopLevelDataCoder: TopLevelEncoder, TopLevelDecoder where Input == Data, Output == Data {
-    
+public protocol TopLevelDataCoder {
+    func decode<T: Decodable>(_ type: T.Type, from data: Data) throws -> T
+    func encode<T: Encodable>(_ value: T) throws -> Data
 }
 
 extension TopLevelDataCoder where Self == JSONCoder {
