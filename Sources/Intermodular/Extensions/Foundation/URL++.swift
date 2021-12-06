@@ -57,3 +57,13 @@ extension URL {
         try setResourceValues(values)
     }
 }
+
+extension URL {
+    public static var userDocuments: URL! {
+        try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask)
+    }
+
+    public static func securityAppGroupContainer(for identifier: String) throws -> URL {
+        try FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: identifier).unwrap()
+    }
+}

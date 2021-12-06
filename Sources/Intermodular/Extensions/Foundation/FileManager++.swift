@@ -6,32 +6,26 @@ import Foundation
 import Swift
 
 extension FileManager {
+    /// Returns a Boolean value that indicates whether a file or directory exists at a specified URL.
     public func fileExists(at url: URL) -> Bool {
         fileExists(atPath: url.path)
     }
 
-    public func url(
-        for directory: SearchPathDirectory,
-        in domainMask: SearchPathDomainMask
-    ) throws -> URL {
-        enum ResolutionError: Error {
-            case noURLFound
-            case foundMultipleURLs
+    /// Returns a Boolean value that indicates whether a directory exists at a specified URL.
+    public func directoryExists(at url: URL) -> Bool {
+        var isFolder: ObjCBool = false
+
+        fileExists(atPath: url.path, isDirectory: &isFolder)
+
+        if isFolder.boolValue {
+            return true
+        } else {
+            return false
         }
-        
-        let urls = urls(for: directory, in: domainMask)
-        
-        guard let result = urls.first else {
-            throw ResolutionError.noURLFound
-        }
-        
-        guard urls.count == 1 else {
-            throw ResolutionError.foundMultipleURLs
-        }
-        
-        return result
     }
-    
+}
+
+extension FileManager {
     public func contents(of url: URL) throws -> Data {
         try contents(atPath: url.path).unwrap()
     }
@@ -52,5 +46,29 @@ extension FileManager {
         } else {
             try data.write(to: url)
         }
+    }
+}
+
+extension FileManager {
+    public func url(
+        for directory: SearchPathDirectory,
+        in domainMask: SearchPathDomainMask
+    ) throws -> URL {
+        enum ResolutionError: Error {
+            case noURLFound
+            case foundMultipleURLs
+        }
+
+        let urls = urls(for: directory, in: domainMask)
+
+        guard let result = urls.first else {
+            throw ResolutionError.noURLFound
+        }
+
+        guard urls.count == 1 else {
+            throw ResolutionError.foundMultipleURLs
+        }
+
+        return result
     }
 }
