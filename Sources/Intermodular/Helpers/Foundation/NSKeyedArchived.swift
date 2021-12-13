@@ -28,14 +28,22 @@ public struct NSKeyedArchived<Value>: Codable {
         let container = try decoder.singleValueContainer()
         
         if let type = Value.self as? NSCoding.Type {
-            wrappedValue = try type.init(coder: try NSKeyedUnarchiver(forReadingFrom: try container.decode(Data.self))).unwrap() as! Value
+            let unarchiver = try NSKeyedUnarchiver(forReadingFrom: try container.decode(Data.self))
+            
+            unarchiver.requiresSecureCoding = Value.self is NSSecureCoding.Type
+            
+            wrappedValue = try type.init(coder: unarchiver).unwrap() as! Value
         } else {
             let type = (Value.self as! _opaque_Optional.Type)._opaque_Optional_Wrapped as! NSCoding.Type
             
             if container.decodeNil() {
                 wrappedValue = (Value.self as! _opaque_Optional.Type).init(nilLiteral: ()) as! Value
             } else {
-                wrappedValue = try type.init(coder: try NSKeyedUnarchiver(forReadingFrom: try container.decode(Data.self))).unwrap() as! Value
+                let unarchiver = try NSKeyedUnarchiver(forReadingFrom: try container.decode(Data.self))
+                
+                unarchiver.requiresSecureCoding = Value.self is NSSecureCoding.Type
+
+                wrappedValue = try type.init(coder: unarchiver).unwrap() as! Value
             }
         }
     }
