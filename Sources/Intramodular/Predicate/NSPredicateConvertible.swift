@@ -19,6 +19,14 @@ public protocol NSPredicateConvertible {
     func toNSPredicate(context: NSPredicateConversionContext) throws -> NSPredicate
 }
 
+// MARK: - Implementations -
+
+extension NSPredicate: NSPredicateConvertible {
+    public func toNSPredicate(context: NSPredicateConversionContext) throws -> NSPredicate {
+        self
+    }
+}
+
 extension Predicate {
     public func toNSPredicate(context: NSPredicateConversionContext) throws -> NSPredicate {
         switch self {
@@ -149,6 +157,7 @@ extension Predicate {
     }
 }
 
+// MARK: - Auxiliary Implementation -
 
 private extension PredicateExpressionPrimitiveType {
     var value: Any? {

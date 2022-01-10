@@ -19,6 +19,10 @@ public indirect enum Predicate<Root>: NSPredicateConvertible {
 public struct AnyPredicate: NSPredicateConvertible {
     private let base: NSPredicateConvertible
     
+    public init(_ predicate: NSPredicate) {
+        self.base = predicate
+    }
+    
     public init<Root>(_ predicate: Predicate<Root>) {
         self.base = predicate
     }
