@@ -5,7 +5,8 @@
 import Foundation
 import Swift
 
-public enum Gender: String, Codable {
+/// A person's gender.
+public enum PersonGender: String, Codable {
     case male
     case female
     case other

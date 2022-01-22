@@ -6,11 +6,16 @@ import Foundation
 import Swallow
 
 extension Date {
-    public init(string: String, dateFormat: String) throws {
+    public init(
+        from string: String,
+        format: String,
+        in calendar: Calendar = .current
+    ) throws {
         let formatter = DateFormatter()
-        
-        formatter.dateFormat = dateFormat
-        
+
+        formatter.calendar = calendar
+        formatter.dateFormat = format
+
         self = try formatter.date(from: string).unwrap()
     }
     
@@ -55,7 +60,7 @@ extension Date {
     }
     
     public func adding(days: Int) -> Date! {
-        Calendar.current.date(byAdding: DateComponents(day: days), to: Date())
+        Calendar.current.date(byAdding: DateComponents(day: days), to: self)
     }
     
     /// Number of days (relative to this date) till a given date.
@@ -70,7 +75,7 @@ extension Date {
 
 extension Date {
     public var startOfDay: Date {
-        return Calendar.current.startOfDay(for: self)
+        Calendar.current.startOfDay(for: self)
     }
     
     public var endOfDay: Date {
