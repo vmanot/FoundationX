@@ -9,20 +9,15 @@ public protocol PredicateExpression: NSExpressionConvertible {
     associatedtype Root
     associatedtype Value
     
-    var comparisonModifier: PredicateExpressionComparisonModifier { get }
-}
-
-public enum PredicateExpressionComparisonModifier {
-    case direct
-    case all
-    case any
-    case none
+    var comparisonModifier: ComparisonPredicate.Modifier { get }
 }
 
 // MARK: - Implementation -
 
 extension PredicateExpression {
-    public var comparisonModifier: PredicateExpressionComparisonModifier { .direct }
+    public var comparisonModifier: ComparisonPredicate.Modifier {
+        .direct
+    }
 }
 
 // MARK: - Conformances -
@@ -31,10 +26,12 @@ extension KeyPath: PredicateExpression {
     
 }
 
-struct AnyPredicateExpression: NSExpressionConvertible {
-    let comparisonModifier: PredicateExpressionComparisonModifier
+public struct AnyPredicateExpression: PredicateExpression {
+    public typealias Root = Any
+    public typealias Value = Any
     
-    private let expression: NSExpressionConvertible
+    public let comparisonModifier: ComparisonPredicate.Modifier
+    public let expression: NSExpressionConvertible
     
     init<E: NSExpressionConvertible & PredicateExpression>(_ expression: E) {
         self.comparisonModifier = expression.comparisonModifier

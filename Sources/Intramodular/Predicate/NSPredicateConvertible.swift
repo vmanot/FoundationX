@@ -36,17 +36,17 @@ extension Predicate {
                         return NSComparisonPredicate(
                             leftExpression: try comparison.expression.toNSExpression(context: context.expressionConversionContext),
                             rightExpression: makeExpression(from: comparison.value),
-                            modifier: makeComparisonModifier(from: comparison.modifier),
-                            type: makeOperator(from: comparison.operator),
-                            options: makeComparisonOptions(from: comparison.options)
+                            modifier: .init(from: comparison.modifier),
+                            type: .init(from: comparison.operator),
+                            options: .init(from: comparison.options)
                         )
                     case .none:
                         return NSCompoundPredicate(notPredicateWithSubpredicate: NSComparisonPredicate(
                             leftExpression: try comparison.expression.toNSExpression(context: context.expressionConversionContext),
                             rightExpression: NSExpression(forConstantValue: comparison.value),
-                            modifier: makeComparisonModifier(from: comparison.modifier),
-                            type: makeOperator(from: comparison.operator),
-                            options: makeComparisonOptions(from: comparison.options)
+                            modifier: .init(from: comparison.modifier),
+                            type: .init(from: comparison.operator),
+                            options: .init(from: comparison.options)
                         ))
                 }
             case let .boolean(value):
@@ -69,97 +69,35 @@ extension Predicate {
         }
     }
     
-    private func makeExpression(from primitive: PredicateExpressionPrimitiveType) -> NSExpression {
-        return NSExpression(forConstantValue: primitive.value)
+    private func makeExpression(from primitive: PredicateExpressionPrimitive) -> NSExpression {
+        NSExpression(forConstantValue: primitive.value)
     }
     
-    private func makeOperator(from operator: PredicateComparison.Operator) -> NSComparisonPredicate.Operator {
-        switch `operator` {
-            case .beginsWith:
-                return .beginsWith
-            case .between:
-                return .between
-            case .contains:
-                return .contains
-            case .endsWith:
-                return .endsWith
-            case .equal:
-                return .equalTo
-            case .greaterThan:
-                return .greaterThan
-            case .greaterThanOrEqual:
-                return .greaterThanOrEqualTo
-            case .in:
-                return .in
-            case .lessThan:
-                return .lessThan
-            case .lessThanOrEqual:
-                return .lessThanOrEqualTo
-            case .like:
-                return .like
-            case .matches:
-                return .matches
-            case .notEqual:
-                return .notEqualTo
-        }
-    }
-    
-    private func makeComparisonOptions(from options: PredicateComparison.Options) -> NSComparisonPredicate.Options {
-        var comparisonOptions = NSComparisonPredicate.Options()
-        
-        if options.contains(.caseInsensitive) {
-            comparisonOptions.formUnion(.caseInsensitive)
+    /*private func makeSortDescriptor<T>(from sortCriterion: SortCriterion<T>) -> NSSortDescriptor {
+        guard let comparator = sortCriterion.comparator else {
+            return NSSortDescriptor(
+                key: sortCriterion.property.stringValue,
+                ascending: sortCriterion.order == .ascending
+            )
         }
         
-        if options.contains(.diacriticInsensitive) {
-            comparisonOptions.formUnion(.diacriticInsensitive)
-        }
-        
-        if options.contains(.normalized) {
-            comparisonOptions.formUnion(.normalized)
-        }
-        
-        return comparisonOptions
-    }
-    
-    /* private func makeSortDescriptor<T>(from sortCriterion: SortCriterion<T>) -> NSSortDescriptor {
-     guard let comparator = sortCriterion.comparator else {
-     return NSSortDescriptor(
-     key: sortCriterion.property.stringValue,
-     ascending: sortCriterion.order == .ascending
-     )
-     }
-     
-     return NSSortDescriptor(
-     key: sortCriterion.property.stringValue,
-     ascending: sortCriterion.order == .ascending,
-     comparator: { lhs, rhs in
-     guard let lhs = lhs as? T, let rhs = rhs as? T else {
-     return .orderedDescending
-     }
-     
-     return comparator(lhs, rhs)
-     }
-     )
-     }
-     */
-    private func makeComparisonModifier(from modifier: PredicateExpressionComparisonModifier) -> NSComparisonPredicate.Modifier {
-        switch modifier {
-            case .direct:
-                return .direct
-            case .all:
-                return .all
-            case .any:
-                return .any
-            case .none:
-                return .any
-        }
-    }
+        return NSSortDescriptor(
+            key: sortCriterion.property.stringValue,
+            ascending: sortCriterion.order == .ascending,
+            comparator: { lhs, rhs in
+                guard let lhs = lhs as? T, let rhs = rhs as? T else {
+                    return .orderedDescending
+                }
+                
+                return comparator(lhs, rhs)
+            }
+        )
+    }*/
 }
 
 // MARK: - Auxiliary Implementation -
 
-private extension PredicateExpressionPrimitiveType {
+private extension PredicateExpressionPrimitive {
     var value: Any? {
         switch Self.predicatePrimitiveType {
             case .nil:

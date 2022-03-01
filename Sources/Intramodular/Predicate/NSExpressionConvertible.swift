@@ -54,7 +54,7 @@ extension KeyPath: NSExpressionConvertible {
     }
 }
 
-extension ArrayIndexPredicateExpression: NSExpressionConvertible where Array: NSExpressionConvertible {
+extension ArrayIndexPredicateExpression: NSExpressionConvertible where ArrayExpression: NSExpressionConvertible {
     public func toNSExpression(context: NSExpressionConversionContext) throws -> NSExpression {
         switch self {
             case let .index(expression, index):

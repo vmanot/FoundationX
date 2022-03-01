@@ -14,15 +14,15 @@ enum ArrayElementKeyPathType: Equatable {
     case none
 }
 
-public struct ArrayElementKeyPathPredicateExpression<Array, Value>: PredicateExpression where Array: PredicateExpression, Array.Value: AnyArrayOrSet {
-    public typealias Root = Array.Root
-    public typealias Element = Array.Value.Element
+public struct ArrayElementKeyPathPredicateExpression<ArrayExpression, Value>: PredicateExpression where ArrayExpression: PredicateExpression, ArrayExpression.Value: AnyArrayOrSet {
+    public typealias Root = ArrayExpression.Root
+    public typealias Element = ArrayExpression.Value.Element
     
     let type: ArrayElementKeyPathType
-    let array: Array
+    let array: ArrayExpression
     let elementKeyPath: AnyKeyPath
     
-    public var comparisonModifier: PredicateExpressionComparisonModifier {
+    public var comparisonModifier: ComparisonPredicate.Modifier {
         switch type {
             case .first, .last, .index:
                 return .direct
@@ -37,7 +37,7 @@ public struct ArrayElementKeyPathPredicateExpression<Array, Value>: PredicateExp
     
     init(
         _ type: ArrayElementKeyPathType,
-        _ array: Array,
+        _ array: ArrayExpression,
         _ elementKeyPath: AnyKeyPath
     ) {
         self.type = type
@@ -46,7 +46,7 @@ public struct ArrayElementKeyPathPredicateExpression<Array, Value>: PredicateExp
     }
 }
 
-extension ArrayElementKeyPathPredicateExpression: NSExpressionConvertible where Array: NSExpressionConvertible {
+extension ArrayElementKeyPathPredicateExpression: NSExpressionConvertible where ArrayExpression: NSExpressionConvertible {
     public func toNSExpression(context: NSExpressionConversionContext) throws -> NSExpression {
         func value() throws -> String {
             switch type {

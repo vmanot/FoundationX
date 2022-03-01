@@ -36,7 +36,7 @@ extension FileManager {
         createDirectoriesIfNecessary: Bool = true
     ) throws {
         if createDirectoriesIfNecessary {
-            if fileExists(atPath: url.deletingLastPathComponent().path) {
+            if directoryExists(at: url.deletingLastPathComponent()) {
                 try data.write(to: url)
             } else {
                 try createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true, attributes: [:])

@@ -7,7 +7,7 @@ import Swallow
 
 /// A type-safe set of conditions used to filter a list of objects of type `Root`.
 public indirect enum Predicate<Root>: NSPredicateConvertible {
-    case comparison(PredicateComparison)
+    case comparison(ComparisonPredicate)
     case boolean(Bool)
     case and(Predicate<Root>, Predicate<Root>)
     case or(Predicate<Root>, Predicate<Root>)
@@ -46,15 +46,6 @@ public enum ComparisonPredicationExpressionTransform<
     case max(Input)
     case mode(Input)
     case size(Input)
-}
-
-public enum ArrayIndexPredicateExpression<Array: PredicateExpression>: PredicateExpression where Array.Value: AnyArray {
-    public typealias Root = Array.Root
-    public typealias Value = Array.Value.ArrayElement
-    
-    case index(Array, Int)
-    case first(Array)
-    case last(Array)
 }
 
 public struct QueryPredicateExpression<Root, Subject: AnyArrayOrSet>: PredicateExpression {
@@ -107,14 +98,14 @@ extension PredicateExpression where Value: AnyArrayOrSet {
     }
 }
 
-extension PredicateExpression where Value: PredicateExpressionPrimitiveType {
+extension PredicateExpression where Value: PredicateExpressionPrimitive {
     public func `in`(_ list: Value...) -> Predicate<Root> {
         .comparison(.init(self, .in, list))
     }
 }
 
 extension PredicateExpression where Value == String {
-    public func `in`(_ list: [Value], _ options: PredicateComparison.Options = .caseInsensitive) -> Predicate<Root> {
+    public func `in`(_ list: [Value], _ options: ComparisonPredicate.Options = .caseInsensitive) -> Predicate<Root> {
         .comparison(.init(self, .in, list, options))
     }
 }
@@ -187,14 +178,14 @@ extension Optional: AnyArray where Wrapped: AnyArray {
 // MARK: - PrimitiveCollection
 
 public protocol PrimitiveCollection {
-    associatedtype PrimitiveElement: PredicateExpressionPrimitiveType
+    associatedtype PrimitiveElement: PredicateExpressionPrimitive
 }
 
-extension Array: PrimitiveCollection where Element: PredicateExpressionPrimitiveType {
+extension Array: PrimitiveCollection where Element: PredicateExpressionPrimitive {
     public typealias PrimitiveElement = Element
 }
 
-extension Set: PrimitiveCollection where Element: PredicateExpressionPrimitiveType {
+extension Set: PrimitiveCollection where Element: PredicateExpressionPrimitive {
     public typealias PrimitiveElement = Element
 }
 
@@ -205,10 +196,10 @@ extension Optional: PrimitiveCollection where Wrapped: PrimitiveCollection {
 // MARK: - AdditiveCollection
 
 public protocol AdditiveCollection {
-    associatedtype AdditiveElement: AdditiveArithmetic & PredicateExpressionPrimitiveType
+    associatedtype AdditiveElement: AdditiveArithmetic & PredicateExpressionPrimitive
 }
 
-extension Array: AdditiveCollection where Element: AdditiveArithmetic & PredicateExpressionPrimitiveType {
+extension Array: AdditiveCollection where Element: AdditiveArithmetic & PredicateExpressionPrimitive {
     public typealias AdditiveElement = Element
 }
 
@@ -219,10 +210,10 @@ extension Optional: AdditiveCollection where Wrapped: PrimitiveCollection & Addi
 // MARK: - ComparableCollection
 
 public protocol ComparableCollection {
-    associatedtype ComparableElement: Comparable & PredicateExpressionPrimitiveType
+    associatedtype ComparableElement: Comparable & PredicateExpressionPrimitive
 }
 
-extension Array: ComparableCollection where Element: Comparable & PredicateExpressionPrimitiveType {
+extension Array: ComparableCollection where Element: Comparable & PredicateExpressionPrimitive {
     public typealias ComparableElement = Element
 }
 
