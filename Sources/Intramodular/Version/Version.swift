@@ -5,7 +5,7 @@
 import Foundation
 import Swallow
 
-public struct Version {
+public struct Version: Sendable {
     public static var zero: Version {
         .init(major: 0, minor: nil, patch: nil, prerelease: nil, build: nil)
     }

@@ -42,7 +42,7 @@ public struct NSKeyedArchived<Value>: Codable {
                 let unarchiver = try NSKeyedUnarchiver(forReadingFrom: try container.decode(Data.self))
                 
                 unarchiver.requiresSecureCoding = Value.self is NSSecureCoding.Type
-
+                
                 wrappedValue = try type.init(coder: unarchiver).unwrap() as! Value
             }
         }

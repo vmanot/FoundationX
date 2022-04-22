@@ -144,3 +144,34 @@ extension Date {
         toString(dateFormat: "hh:mm:ss a")
     }
 }
+
+extension Date {
+    public static func + (lhs: Self, rhs: DispatchTimeInterval) -> Self {
+        lhs.addingTimeInterval(TimeInterval(from: rhs))
+    }
+
+    public static func - (lhs: Self, rhs: DispatchTimeInterval) -> Self {
+        lhs.addingTimeInterval(-TimeInterval(from: rhs))
+    }
+}
+
+// MARK: - Auxiliary Implementation -
+
+fileprivate extension TimeInterval {
+    init(from interval: DispatchTimeInterval) {
+        switch interval {
+            case let .seconds(s):
+                self = .init(s)
+            case let .milliseconds(ms):
+                self = .init(TimeInterval(ms) / 1000.0)
+            case let .microseconds(us):
+                self = .init(Int64(us) * Int64(NSEC_PER_USEC)) / TimeInterval(NSEC_PER_SEC)
+            case let .nanoseconds(ns):
+                self = .init(ns) / TimeInterval(NSEC_PER_SEC)
+            case .never:
+                fatalError()
+            @unknown default:
+                fatalError()
+        }
+    }
+}
