@@ -17,9 +17,7 @@ extension NSRange: _opaque_Collection, Collection, Countable {
     }
     
     public subscript(position: Index) -> Index {
-        fatallyAssertIndexAsValidSubscriptArgument(position)
-        
-        return startIndex + position
+        startIndex + position
     }
 }
 
