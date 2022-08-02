@@ -47,7 +47,12 @@ extension Decimal: ArithmeticOperatable {
 
 extension NSCharacterSet {
     public static func + (lhs: NSCharacterSet, rhs: NSCharacterSet) -> NSCharacterSet {
-        NSMutableCharacterSet().applyingSelfOn({ $0.formUnion(with: lhs as CharacterSet); $0.formUnion(with: rhs as CharacterSet) })
+        let set = NSMutableCharacterSet()
+        
+        set.formUnion(with: lhs as CharacterSet)
+        set.formUnion(with: rhs as CharacterSet)
+
+        return set
     }
     
     public static func += (lhs: inout NSCharacterSet, rhs: NSCharacterSet) {

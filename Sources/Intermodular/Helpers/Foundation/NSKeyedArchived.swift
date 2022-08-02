@@ -70,6 +70,10 @@ extension NSKeyedArchived: Hashable where Value: Hashable {
     
 }
 
+extension NSKeyedArchived: @unchecked Sendable where Value: Sendable {
+    
+}
+
 extension NSKeyedArchived where Value: ExpressibleByNilLiteral & NSCoding {
     public init(nilLiteral: Void) {
         self.init(wrappedValue: .init(nilLiteral: ()))
