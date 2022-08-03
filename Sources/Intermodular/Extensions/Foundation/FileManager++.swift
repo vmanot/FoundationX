@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import System
 import Swift
 
 extension FileManager {
@@ -29,7 +30,16 @@ extension FileManager {
     public func contents(of url: URL) throws -> Data {
         try contents(atPath: url.path).unwrap()
     }
-    
+
+    public func contentsOfDirectory(at url: URL) throws -> [URL] {
+        try contentsOfDirectory(at: url, includingPropertiesForKeys: [])
+    }
+
+    @available(macOS 11.0, iOS 14.0, watchOS 7.0, tvOS 14.0, *)
+    public func contentsOfDirectory(at path: FilePath) throws -> [URL] {
+        try contentsOfDirectory(at: URL(path).unwrap(), includingPropertiesForKeys: [])
+    }
+
     public func setContents(
         of url: URL,
         to data: Data,
