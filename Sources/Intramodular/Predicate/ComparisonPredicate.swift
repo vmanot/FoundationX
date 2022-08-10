@@ -132,3 +132,43 @@ extension NSComparisonPredicate.Options {
         }
     }
 }
+
+extension ComparisonPredicate: NSPredicateConvertible {
+    public func toNSPredicate(context: NSPredicateConversionContext) throws -> NSPredicate {
+        switch modifier {
+            case .direct, .any, .all:
+                return NSComparisonPredicate(
+                    leftExpression: try expression.toNSExpression(context: context.expressionConversionContext),
+                    rightExpression: makeExpression(from: value),
+                    modifier: .init(from: modifier),
+                    type: .init(from: `operator`),
+                    options: .init(from: options)
+                )
+            case .none:
+                return NSCompoundPredicate(notPredicateWithSubpredicate: NSComparisonPredicate(
+                    leftExpression: try expression.toNSExpression(context: context.expressionConversionContext),
+                    rightExpression: NSExpression(forConstantValue: value),
+                    modifier: .init(from: modifier),
+                    type: .init(from: `operator`),
+                    options: .init(from: options)
+                ))
+        }
+    }
+
+    private func makeExpression(from primitive: PredicateExpressionPrimitive) -> NSExpression {
+        NSExpression(forConstantValue: primitive.value)
+    }
+}
+
+// MARK: - Auxiliary Implementation -
+
+private extension PredicateExpressionPrimitive {
+    var value: Any? {
+        switch Self.predicatePrimitiveType {
+            case .nil:
+                return NSNull()
+            default:
+                return self
+        }
+    }
+}

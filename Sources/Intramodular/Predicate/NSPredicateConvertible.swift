@@ -31,24 +31,7 @@ extension Predicate {
     public func toNSPredicate(context: NSPredicateConversionContext) throws -> NSPredicate {
         switch self {
             case let .comparison(comparison):
-                switch comparison.modifier {
-                    case .direct, .any, .all:
-                        return NSComparisonPredicate(
-                            leftExpression: try comparison.expression.toNSExpression(context: context.expressionConversionContext),
-                            rightExpression: makeExpression(from: comparison.value),
-                            modifier: .init(from: comparison.modifier),
-                            type: .init(from: comparison.operator),
-                            options: .init(from: comparison.options)
-                        )
-                    case .none:
-                        return NSCompoundPredicate(notPredicateWithSubpredicate: NSComparisonPredicate(
-                            leftExpression: try comparison.expression.toNSExpression(context: context.expressionConversionContext),
-                            rightExpression: NSExpression(forConstantValue: comparison.value),
-                            modifier: .init(from: comparison.modifier),
-                            type: .init(from: comparison.operator),
-                            options: .init(from: comparison.options)
-                        ))
-                }
+                return try comparison.toNSPredicate(context: context)
             case let .boolean(value):
                 return NSPredicate(value: value)
             case let .and(lhs, rhs):
@@ -68,11 +51,7 @@ extension Predicate {
                 return predicate
         }
     }
-    
-    private func makeExpression(from primitive: PredicateExpressionPrimitive) -> NSExpression {
-        NSExpression(forConstantValue: primitive.value)
-    }
-    
+        
     /*private func makeSortDescriptor<T>(from sortCriterion: SortCriterion<T>) -> NSSortDescriptor {
         guard let comparator = sortCriterion.comparator else {
             return NSSortDescriptor(
@@ -93,17 +72,4 @@ extension Predicate {
             }
         )
     }*/
-}
-
-// MARK: - Auxiliary Implementation -
-
-private extension PredicateExpressionPrimitive {
-    var value: Any? {
-        switch Self.predicatePrimitiveType {
-            case .nil:
-                return NSNull()
-            default:
-                return self
-        }
-    }
 }

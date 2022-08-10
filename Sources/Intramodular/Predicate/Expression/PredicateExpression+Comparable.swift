@@ -17,6 +17,11 @@ public func == <E: PredicateExpression, T: Equatable & PredicateExpressionPrimit
     .comparison(.init(lhs, .equal, rhs))
 }
 
+
+public func == <E: PredicateExpression, T: PredicateExpressionPrimitiveConvertible> (lhs: E, rhs: T) -> Predicate<E.Root> {
+    .comparison(.init(lhs, .equal, rhs.toPredicateExpressionPrimitive()))
+}
+
 @_disfavoredOverload
 public func == <E: PredicateExpression> (lhs: E, rhs: NilPredicateExpressionValue) -> Predicate<E.Root> where E.Value: OptionalProtocol {
     .comparison(.init(lhs, .equal, rhs))

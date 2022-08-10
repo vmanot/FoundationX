@@ -4,6 +4,10 @@
 
 import Foundation
 
+public protocol PredicateExpressionPrimitiveConvertible {
+    func toPredicateExpressionPrimitive() -> PredicateExpressionPrimitive
+}
+
 public protocol PredicateExpressionPrimitive {
     static var predicatePrimitiveType: PredicateExpressionPrimitiveType { get }
 }
@@ -27,6 +31,7 @@ public indirect enum PredicateExpressionPrimitiveType: Equatable {
     case url
     case uuid
     case data
+    case object
     case wrapped(PredicateExpressionPrimitiveType)
     case array(PredicateExpressionPrimitiveType)
     case `nil`
@@ -113,6 +118,10 @@ extension UUID: PredicateExpressionPrimitive {
 
 extension Data: PredicateExpressionPrimitive {
     public static let predicatePrimitiveType: PredicateExpressionPrimitiveType = .data
+}
+
+extension NSObject: PredicateExpressionPrimitive {
+    public static let predicatePrimitiveType: PredicateExpressionPrimitiveType = .object
 }
 
 extension Optional: PredicateExpressionPrimitive where Wrapped: PredicateExpressionPrimitive {
