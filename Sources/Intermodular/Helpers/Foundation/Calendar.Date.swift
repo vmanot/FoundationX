@@ -56,7 +56,7 @@ extension Calendar {
 
 extension Calendar.Date: CustomStringConvertible {
     public var description: String {
-        DateFormatter(dateFormat: "yyyy-MM-dd").string(from: .init(from: self))
+        DateFormatter(dateFormat: "yyyy-MM-dd").string(from: Date(from: self))
     }
 }
 

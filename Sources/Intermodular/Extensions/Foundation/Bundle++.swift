@@ -38,3 +38,9 @@ extension Bundle {
         return nil
     }
 }
+
+extension Bundle {
+    public var name: String? {
+        infoDictionary?[kCFBundleNameKey as String] as? String
+    }
+}
