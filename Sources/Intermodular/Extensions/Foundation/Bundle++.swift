@@ -7,6 +7,32 @@ import Foundation
 import Swallow
 
 extension Bundle {
+    public struct ID: Codable, ExpressibleByStringLiteral, Hashable {
+        public let rawValue: String
+        
+        public init(rawValue: String) {
+            self.rawValue = rawValue
+        }
+        
+        public init(from decoder: Decoder) throws {
+            try self.init(rawValue: String(from: decoder))
+        }
+        
+        public func encode(to encoder: Encoder) throws {
+            try rawValue.encode(to: encoder)
+        }
+        
+        public init(stringLiteral: String) {
+            self.init(rawValue: stringLiteral)
+        }
+    }
+    
+    public var id: Bundle.ID? {
+        bundleIdentifier.map(Bundle.ID.init(rawValue:))
+    }
+}
+
+extension Bundle {
     private static let cache = NSCache<NSNumber, Bundle>()
     
     public class var current: Bundle? {
