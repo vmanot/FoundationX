@@ -241,7 +241,7 @@ extension Version: Hashable {
     }
 }
 
-// MARK: - Usage -
+// MARK: - Supplementary API -
 
 extension Bundle {
     /// The marketing version number of the bundle.
@@ -249,25 +249,21 @@ extension Bundle {
         #if os(Linux)
         return nil
         #else
-        return versionFromInfoDictionary(forKey: String(kCFBundleVersionKey))
+        return try? parseVersion(forInfoDictionaryKey: String(kCFBundleVersionKey))
         #endif
     }
     
     /// The short version number of the bundle.
     public var shortVersion: Version? {
-        return versionFromInfoDictionary(forKey: "CFBundleShortVersionString")
+        try? parseVersion(forInfoDictionaryKey: "CFBundleShortVersionString")
     }
     
-    private func versionFromInfoDictionary(forKey key: String) -> Version? {
-        guard let infoDictionary = infoDictionary else {
+    private func parseVersion(forInfoDictionaryKey key: String) throws -> Version? {
+        guard let bundleVersion = infoDictionary?[key] as? String else {
             return nil
         }
         
-        guard let bundleVersion = infoDictionary[key] as? String else {
-            return nil
-        }
-        
-        return try? Version.lenientParser.parse(string: bundleVersion)
+        return try Version.lenientParser.parse(string: bundleVersion)
     }
 }
 

@@ -14,7 +14,7 @@ public protocol TopLevelDataCoder {
 
 // MARK: - Implementations -
 
-public final class PropertyListCoder: TopLevelDataCoder {
+public struct PropertyListCoder: TopLevelDataCoder {
     private let decoder = PropertyListDecoder()
     private let encoder = PropertyListEncoder()
     
@@ -33,9 +33,18 @@ extension TopLevelDataCoder where Self == PropertyListCoder {
     }
 }
 
-public final class JSONCoder: TopLevelDataCoder {
-    private let decoder = JSONDecoder()
-    private let encoder = JSONEncoder()
+public struct JSONCoder: TopLevelDataCoder {
+    private let decoder: JSONDecoder
+    private let encoder: JSONEncoder
+    
+    public init(decoder: JSONDecoder, encoder: JSONEncoder) {
+        self.decoder = decoder
+        self.encoder = encoder
+    }
+    
+    public init() {
+        self.init(decoder: .init(), encoder: .init())
+    }
     
     public func decode<T: Decodable>(_ type: T.Type, from data: Data) throws -> T {
         try decoder.decode(type, from: data)
@@ -49,5 +58,47 @@ public final class JSONCoder: TopLevelDataCoder {
 extension TopLevelDataCoder where Self == JSONCoder {
     public static var json: JSONCoder {
         JSONCoder()
+    }
+}
+
+// MARK: - Supplementary API -
+
+extension TopLevelDataCoder {
+    /// Wraps the coder and returns one capable of polymorphic decoding
+    public func polymorphic() -> PolymorphicTopLevelDataCoder<Self> {
+        .init(base: self)
+    }
+}
+
+// MARK: - Auxiliary Implementation -
+
+/// A wrapper coder that allows for polymorphic decoding.
+public struct PolymorphicTopLevelDataCoder<Coder: TopLevelDataCoder>: TopLevelDataCoder {
+    public var base: Coder
+    
+    fileprivate init(base: Coder) {
+        self.base = base
+    }
+    
+    public func decode<T: Decodable>(_ type: T.Type, from data: Data) throws -> T {
+        try _PolymorphicTopLevelDecoder(from: _TopLevelDecoderFromTopLevelDataCoder(base: base)).decode(type, from: data)
+    }
+    
+    public func encode<T: Encodable>(_ value: T) throws -> Data {
+        try base.encode(value)
+    }
+}
+
+public struct _TopLevelDecoderFromTopLevelDataCoder<Coder: TopLevelDataCoder>: TopLevelDecoder {
+    public typealias Input = Data
+    
+    public let base: Coder
+    
+    public init(base: Coder) {
+        self.base = base
+    }
+    
+    public func decode<T: Decodable>(_ type: T.Type, from input: Input) throws -> T {
+        try base.decode(type, from: input)
     }
 }

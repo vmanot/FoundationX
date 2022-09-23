@@ -27,3 +27,16 @@ public enum NotableFileLocation {
         }
     }
 }
+
+extension NotableFileLocation {
+    /// Returns the first valid location of the two given operands.
+    public static func || (lhs: Self, rhs: Self) -> Self {
+        do {
+            _ = try lhs.toURL()
+            
+            return lhs
+        } catch {
+            return rhs
+        }
+    }
+}
