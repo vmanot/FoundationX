@@ -5,10 +5,10 @@
 import Foundation
 import Swallow
 
-/// Shorthands for notable file locations.
+/// Shorthands for standard file directories.
 ///
 /// Written to improve API ergonomics.
-public enum NotableFileLocation {
+public enum CanonicalFileDirectory {
     case iCloudDriveDocuments(ubiquityContainerIdentifier: String)
     case securityApplicationGroup(String)
     case ubiquityContainer(String)
@@ -28,7 +28,7 @@ public enum NotableFileLocation {
     }
 }
 
-extension NotableFileLocation {
+extension CanonicalFileDirectory {
     /// Returns the first valid location of the two given operands.
     public static func || (lhs: Self, rhs: Self) -> Self {
         do {

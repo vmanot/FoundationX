@@ -1,4 +1,4 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.6
 
 import PackageDescription
 
@@ -14,9 +14,13 @@ let package = Package(
         .library(name: "FoundationX", targets: ["FoundationX"])
     ],
     dependencies: [
-        .package(url: "https://github.com/vmanot/Swallow.git", .branch("master"))
+        .package(url: "https://github.com/vmanot/Swallow.git", branch: "master")
     ],
     targets: [
-        .target(name: "FoundationX", dependencies: ["Swallow"], path: "Sources")
+        .target(
+            name: "FoundationX",
+            dependencies: ["Swallow"],
+            path: "Sources"
+        )
     ]
 )
