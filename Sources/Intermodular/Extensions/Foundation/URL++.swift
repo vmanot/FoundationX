@@ -75,3 +75,22 @@ extension URL {
         try FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: identifier).unwrap()
     }
 }
+
+extension URL {
+    /// A file path component suitable for a base URL to append.
+    public struct PathComponent: RawRepresentable {
+        public let rawValue: String
+
+        public init(rawValue: String) {
+            self.rawValue = rawValue
+        }
+    }
+
+    public mutating func append(_ component: PathComponent) {
+        appendPathComponent(component.rawValue)
+    }
+
+    public func appending(_ component: PathComponent) -> URL {
+        appendingPathComponent(component.rawValue)
+    }
+}
