@@ -21,7 +21,7 @@ extension UserDefaults {
             return nil
         }
         
-        if let type = type as? KeyValueCodable.Type {
+        if let type = type as? _KeyValueCodingValue.Type {
             return .some(try type.decode(from: self, forKey: key) as! Value)
         } else if let value = value(forKey: key) as? Value {
             return value
@@ -35,7 +35,7 @@ extension UserDefaults {
     public func encode<Value: Codable>(_ value: Value, forKey key: String) throws {
         if let value = value as? _opaque_Optional, value.isNil {
             removeObject(forKey: key)
-        } else if let value = value as? KeyValueCodable {
+        } else if let value = value as? _KeyValueCodingValue {
             try value.encode(to: self, forKey: key)
         } else if let url = value as? URL {
             set(url, forKey: key)

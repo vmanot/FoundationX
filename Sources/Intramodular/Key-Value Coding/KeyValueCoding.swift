@@ -4,7 +4,7 @@
 
 import Foundation
 
-public protocol KeyValueCoder {
+public protocol KeyValueCoding {
     func value(forKey key: String) -> Any?
     func setValue(_ value: Any?, forKey key: String)
     func removeObject(forKey key: String)
@@ -12,7 +12,7 @@ public protocol KeyValueCoder {
 
 // MARK: - Implementation -
 
-extension KeyValueCoder {
+extension KeyValueCoding {
     public func removeObject(forKey key: String) {
         setValue(nil, forKey: key)
     }
@@ -24,7 +24,7 @@ extension KeyValueCoder {
 
 import CloudKit
 
-extension CKRecord: KeyValueCoder {
+extension CKRecord: KeyValueCoding {
     
 }
 
@@ -34,12 +34,12 @@ extension CKRecord: KeyValueCoder {
 
 import CoreData
 
-extension NSManagedObject: KeyValueCoder {
+extension NSManagedObject: KeyValueCoding {
     
 }
 
 #endif
 
-extension UserDefaults: KeyValueCoder {
+extension UserDefaults: KeyValueCoding {
     
 }
