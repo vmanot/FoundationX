@@ -160,7 +160,7 @@ extension ComparisonPredicate: NSPredicateConvertible {
     }
 }
 
-// MARK: - Auxiliary Implementation -
+// MARK: - Auxiliary -
 
 private extension PredicateExpressionPrimitive {
     var value: Any? {

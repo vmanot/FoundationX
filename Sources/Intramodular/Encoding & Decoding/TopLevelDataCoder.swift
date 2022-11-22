@@ -70,7 +70,7 @@ extension TopLevelDataCoder {
     }
 }
 
-// MARK: - Auxiliary Implementation -
+// MARK: - Auxiliary -
 
 /// A wrapper coder that allows for polymorphic decoding.
 public struct PolymorphicTopLevelDataCoder<Coder: TopLevelDataCoder>: TopLevelDataCoder {

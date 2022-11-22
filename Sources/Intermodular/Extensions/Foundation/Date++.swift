@@ -155,7 +155,7 @@ extension Date {
     }
 }
 
-// MARK: - Auxiliary Implementation -
+// MARK: - Auxiliary -
 
 fileprivate extension TimeInterval {
     init(from interval: DispatchTimeInterval) {

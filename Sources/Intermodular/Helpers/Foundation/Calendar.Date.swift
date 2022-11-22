@@ -70,7 +70,7 @@ extension Calendar.Date: LosslessStringConvertible {
     }
 }
 
-// MARK: - Auxiliary Implementation -
+// MARK: - Auxiliary -
 
 extension Date {
     public init(
