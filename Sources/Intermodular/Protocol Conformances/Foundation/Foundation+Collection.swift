@@ -5,7 +5,7 @@
 import Foundation
 import Swallow
 
-extension NSRange: _opaque_Collection, Collection, Countable {
+extension NSRange: Collection, Countable {
     public typealias Index = Int
     
     public var startIndex: Index {

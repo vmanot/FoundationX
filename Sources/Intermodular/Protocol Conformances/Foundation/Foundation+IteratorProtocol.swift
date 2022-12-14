@@ -5,7 +5,7 @@
 import Foundation
 import Swallow
 
-extension NSEnumerator: _opaque_IteratorProtocol, IteratorProtocol {
+extension NSEnumerator: IteratorProtocol {
     public typealias Element = Any
     
     public final func next() -> Element? {

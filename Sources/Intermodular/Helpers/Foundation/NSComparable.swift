@@ -5,7 +5,7 @@
 import Foundation
 import Swallow
 
-public protocol NSComparable: Comparable2 {
+public protocol NSComparable: Comparable {
     func compare(_ other: Self) -> ComparisonResult
 }
 
