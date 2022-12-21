@@ -28,6 +28,7 @@ public enum CanonicalFileDirectory {
     }
 }
 
+
 extension CanonicalFileDirectory {
     /// Returns the first valid location of the two given operands.
     public static func || (lhs: Self, rhs: Self) -> Self {
@@ -38,5 +39,13 @@ extension CanonicalFileDirectory {
         } catch {
             return rhs
         }
+    }
+}
+
+// MARK: - Supplementary API -
+
+extension URL {
+    public init(directory: CanonicalFileDirectory) throws {
+        self = try directory.toURL()
     }
 }
