@@ -12,10 +12,10 @@ extension Date {
         in calendar: Calendar = .current
     ) throws {
         let formatter = DateFormatter()
-
+        
         formatter.calendar = calendar
         formatter.dateFormat = format
-
+        
         self = try formatter.date(from: string).unwrap()
     }
     
@@ -41,8 +41,9 @@ extension Date {
 }
 
 extension Date {
-    public func currentDateComponents() -> DateComponents {
-        Calendar.current.dateComponents(in: .current, from: self)
+    /// Returns all the date components of a date.
+    public func components(calendar: Calendar = .current) -> DateComponents {
+        calendar.dateComponents(in: .current, from: self)
     }
     
     public func get(
@@ -59,17 +60,39 @@ extension Date {
         return calendar.component(component, from: self)
     }
     
-    public func adding(days: Int) -> Date! {
-        Calendar.current.date(byAdding: DateComponents(day: days), to: self)
+    public func get(
+        _ component: Calendar.Component,
+        to other: Date,
+        calendar: Calendar = Calendar.current
+    ) throws -> Int {
+        return try calendar.dateComponents([component], from: self, to: other).value(for: component).unwrap()
     }
     
-    /// Number of days (relative to this date) till a given date.
-    public func days(till other: Date, in calendar: Calendar = .current) -> Int! {
-        calendar.dateComponents([.day], from: self, to: other).day
+    /// Number of days (relative to this date) to a given date.
+    public func days(to other: Date, in calendar: Calendar = .current) throws -> Int {
+        try get(.day, to: other)
+    }
+}
+
+extension Date {
+    private enum DateCalculationFailed: Error {
+        case adding(Calendar.Component, value: Int, to: Date)
     }
     
-    public func seconds(from other: Date) -> Int {
-        return Calendar.current.dateComponents([.second], from: other, to: self).second ?? 0
+    public func adding(_ component: Calendar.Component, value: Int) throws -> Date {
+        do {
+            return try Calendar.current.date(byAdding: component, value: value, to: self).unwrap()
+        } catch {
+            throw DateCalculationFailed.adding(component, value: value, to: self)
+        }
+    }
+    
+    public func adding(days value: Int) throws -> Date {
+        return try adding(.day, value: value)
+    }
+    
+    public func adding(weeks value: Int) throws -> Date {
+        return try adding(.weekOfMonth, value: value)
     }
 }
 
@@ -103,31 +126,31 @@ extension Date {
 
 extension Date {
     public var yearsToNow: Int {
-        Calendar.current.dateComponents([.year], from: self, to: Date()).year ?? 0
+        (try? get(.year, to: Date())) ?? 0
     }
     
     public var monthsToNow: Int {
-        Calendar.current.dateComponents([.month], from: self, to: Date()).month ?? 0
+        (try? get(.month, to: Date())) ?? 0
     }
     
     public var weeksToNow: Int {
-        Calendar.current.dateComponents([.weekOfYear], from: self, to: Date()).weekOfYear ?? 0
+        (try? get(.weekOfYear, to: Date())) ?? 0
     }
     
     public var daysToNow: Int {
-        Calendar.current.dateComponents([.day], from: self, to: Date()).day ?? 0
+        (try? get(.day, to: Date())) ?? 0
     }
     
     public var hoursToNow: Int {
-        Calendar.current.dateComponents([.hour], from: self, to: Date()).hour ?? 0
+        (try? get(.hour, to: Date())) ?? 0
     }
     
     public var minutesToNow: Int {
-        Calendar.current.dateComponents([.minute], from: self, to: Date()).minute ?? 0
+        (try? get(.minute, to: Date())) ?? 0
     }
     
     public var secondsToNow: Int {
-        Calendar.current.dateComponents([.second], from: self, to: Date()).second ?? 0
+        (try? get(.second, to: Date())) ?? 0
     }
 }
 
@@ -149,7 +172,7 @@ extension Date {
     public static func + (lhs: Self, rhs: DispatchTimeInterval) -> Self {
         lhs.addingTimeInterval(TimeInterval(from: rhs))
     }
-
+    
     public static func - (lhs: Self, rhs: DispatchTimeInterval) -> Self {
         lhs.addingTimeInterval(-TimeInterval(from: rhs))
     }
