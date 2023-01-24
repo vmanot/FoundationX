@@ -65,7 +65,7 @@ extension TopLevelDataCoder where Self == JSONCoder {
 
 extension TopLevelDataCoder {
     /// Wraps the coder and returns one capable of polymorphic decoding
-    public func polymorphic() -> PolymorphicTopLevelDataCoder<Self> {
+    public func _polymorphic() -> _PolymorphicTopLevelDataCoder<Self> {
         .init(base: self)
     }
 }
@@ -73,7 +73,7 @@ extension TopLevelDataCoder {
 // MARK: - Auxiliary -
 
 /// A wrapper coder that allows for polymorphic decoding.
-public struct PolymorphicTopLevelDataCoder<Coder: TopLevelDataCoder>: TopLevelDataCoder {
+public struct _PolymorphicTopLevelDataCoder<Coder: TopLevelDataCoder>: TopLevelDataCoder {
     public var base: Coder
     
     fileprivate init(base: Coder) {

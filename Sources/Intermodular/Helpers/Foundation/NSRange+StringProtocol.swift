@@ -7,18 +7,10 @@ import Swallow
 
 extension String {
     public subscript(range: NSRange) -> Substring {
-        return self[Range(range, in: self).orFatallyThrow("invalid range \(range)")]
-    }
-}
-
-extension Substring {
-    public subscript(range: NSRange) -> Substring {
-        return self[Range(range, in: self.parent).orFatallyThrow("invalid range \(range)")]
-    }
-}
-
-extension Sequence where Element == Range<String.Index> {
-    public func toNSRanges(in string: String) -> [NSRange] {
-        return map({ NSRange($0, in: string) })
+        guard let range = Range(range, in: self) else {
+            fatalError("Invalid range \(range)")
+        }
+        
+        return self[range]
     }
 }

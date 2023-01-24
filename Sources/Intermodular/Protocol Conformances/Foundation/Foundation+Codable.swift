@@ -101,6 +101,8 @@ extension URLQueryItem: Codable {
     }
     
     public func encode(to encoder: Encoder) throws {
-        try encoder.encodeSingleValue(_CodableRepresentation(name: name, value: value))
+        var container = encoder.singleValueContainer()
+        
+        try container.encode(_CodableRepresentation(name: name, value: value))
     }
 }

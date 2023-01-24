@@ -93,6 +93,10 @@ extension String: PredicateExpressionPrimitive {
     public static let predicatePrimitiveType: PredicateExpressionPrimitiveType = .string
 }
 
+extension Data: PredicateExpressionPrimitive {
+    public static let predicatePrimitiveType: PredicateExpressionPrimitiveType = .data
+}
+
 extension Date: PredicateExpressionPrimitive {
     public static let predicatePrimitiveType: PredicateExpressionPrimitiveType = .date
 }
@@ -114,10 +118,6 @@ extension URL: PredicateExpressionPrimitive {
 
 extension UUID: PredicateExpressionPrimitive {
     public static let predicatePrimitiveType: PredicateExpressionPrimitiveType = .uuid
-}
-
-extension Data: PredicateExpressionPrimitive {
-    public static let predicatePrimitiveType: PredicateExpressionPrimitiveType = .data
 }
 
 extension NSObject: PredicateExpressionPrimitive {
