@@ -83,7 +83,7 @@ public struct AnyCodableOrNSCodingValue: Codable, Hashable {
     }
     
     public init?(from value: Any) throws {
-        if let value = value as? _opaque_Optional, value.isNil {
+        if let value = value as? any OptionalProtocol, value.isNil {
             return nil
         }
         

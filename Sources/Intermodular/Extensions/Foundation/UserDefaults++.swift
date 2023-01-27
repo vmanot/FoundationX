@@ -33,7 +33,7 @@ extension UserDefaults {
     }
     
     public func encode<Value: Codable>(_ value: Value, forKey key: String) throws {
-        if let value = value as? _opaque_Optional, value.isNil {
+        if let value = value as? any OptionalProtocol, value.isNil {
             removeObject(forKey: key)
         } else if let value = value as? _KeyValueCodingValue {
             try value.encode(to: self, forKey: key)

@@ -24,10 +24,6 @@ extension Data: ExtensibleSequence {
     public mutating func append(_ newElement: Element) {
         append(contentsOf: newElement.readOnly.unsafeRawBytes)
     }
-    
-    public mutating func append<BP: InitiableBufferPointer>(contentsOf newElements: BP) where Element == BP.Element {
-        newElements.baseAddress.collapse({ self.append(reinterpretCast($0), count: .init(newElements.count)) })
-    }
 }
 
 extension NSMutableArray: ExtensibleSequence {

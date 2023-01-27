@@ -12,13 +12,21 @@ extension NSMutableArray: DestructivelyMutableSequence {
         }
     }
     
-    public func forEach<T>(destructivelyMutating iterator: ((inout Element?) throws -> T)) rethrows {
+    public func forEach<T>(
+        destructivelyMutating iterator: ((inout Element?) throws -> T)
+    ) rethrows {
+        TODO.whole(.test)
+        
         for (index, element) in enumerated() {
-            var element: Element! = element
+            var newElement: Element? = element
             
-            _ = try iterator(&element)
+            _ = try iterator(&newElement)
             
-            (element as Element?).collapse({ self[index] = $0 }, do: remove(element!))
+            if let newElement = newElement {
+                self[index] = newElement
+            } else {
+                remove(element)
+            }
         }
     }
 }
@@ -36,15 +44,19 @@ extension NSMutableSet: DestructivelyMutableSequence {
         try forEach(destructivelyMutating: { try iterator(&$0!) })
     }
     
-    public func forEach<T>(destructivelyMutating iterator: ((inout Element?) throws -> T)) rethrows {
+    public func forEach<T>(
+        destructivelyMutating iterator: ((inout Element?) throws -> T)
+    ) rethrows {
         for element in self {
-            var element: Element! = element
+            var newElement: Element? = element
             
-            remove(element!)
+            remove(element)
             
-            _ = try iterator(&element)
+            _ = try iterator(&newElement)
             
-            (element as Element?).collapse(add)
+            if let newElement = newElement {
+                add(newElement)
+            }
         }
     }
 }

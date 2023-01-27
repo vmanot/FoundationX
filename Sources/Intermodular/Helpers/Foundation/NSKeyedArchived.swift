@@ -34,10 +34,10 @@ public struct NSKeyedArchived<Value>: Codable {
             
             wrappedValue = try type.init(coder: unarchiver).unwrap() as! Value
         } else {
-            let type = (Value.self as! _opaque_Optional.Type)._opaque_Optional_Wrapped as! NSCoding.Type
+            let type = (Value.self as! (any OptionalProtocol.Type))._opaque_Optional_WrappedType as! NSCoding.Type
             
             if container.decodeNil() {
-                wrappedValue = (Value.self as! _opaque_Optional.Type).init(nilLiteral: ()) as! Value
+                wrappedValue = (Value.self as! (any OptionalProtocol.Type)).init(nilLiteral: ()) as! Value
             } else {
                 let unarchiver = try NSKeyedUnarchiver(forReadingFrom: try container.decode(Data.self))
                 
@@ -52,7 +52,7 @@ public struct NSKeyedArchived<Value>: Codable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         
-        if let wrappedValue = wrappedValue as? _opaque_Optional, wrappedValue.isNil {
+        if let wrappedValue = wrappedValue as? any OptionalProtocol, wrappedValue.isNil {
             try container.encodeNil()
         } else {
             try container.encode(try NSKeyedArchiver.archivedData(withRootObject: wrappedValue as! NSCoding, requiringSecureCoding: wrappedValue is NSSecureCoding))
