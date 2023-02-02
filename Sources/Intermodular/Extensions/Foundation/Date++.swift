@@ -21,9 +21,11 @@ extension Date {
     
     /// Convert this date to a `String` given a certain format.
     public func toString(dateFormat format: String) -> String {
-        DateFormatter()
-            .then({ $0.dateFormat = format })
-            .string(from: self)
+        let formatter = DateFormatter()
+        
+        formatter.dateFormat = format
+        
+        return formatter.string(from: self)
     }
     
     /// Convert this date to a `String` given a certain format.

@@ -22,7 +22,7 @@ extension Data: ExtensibleSequence {
     }
     
     public mutating func append(_ newElement: Element) {
-        append(contentsOf: newElement.readOnly.unsafeRawBytes)
+        append(contentsOf: newElement.bytes)
     }
 }
 

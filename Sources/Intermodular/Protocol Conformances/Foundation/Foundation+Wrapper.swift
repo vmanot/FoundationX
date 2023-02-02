@@ -19,13 +19,15 @@ extension CharacterSet: Wrapper {
                 rawValue += 1
                 
                 if UnicodeScalar(rawValue).map(contains) ?? false {
-                    let string = NSString(
-                        bytes: rawValue.littleEndianView.readOnly.bytes,
-                        length: 4,
-                        encoding: .utf32LittleEndian
-                    )
-                    
-                    result += .init(string! as String)
+                    rawValue.littleEndianView.withUnsafeBytes { bytes in
+                        let string = NSString(
+                            bytes: bytes,
+                            length: 4,
+                            encoding: .utf32LittleEndian
+                        )
+                        
+                        result += .init(string! as String)
+                    }
                 }
             }
         }
