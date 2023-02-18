@@ -13,7 +13,7 @@ public protocol URLRepresentable: URLConvertible {
     init?(url: URL)
 }
 
-// MARK: - API -
+// MARK: - API
 
 extension String {
     public init(
@@ -33,7 +33,7 @@ extension OutputStream {
     }
 }
 
-// MARK: - Conformances -
+// MARK: - Conformances
 
 extension URL: URLRepresentable {
     public var url: URL {

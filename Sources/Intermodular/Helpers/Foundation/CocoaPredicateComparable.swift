@@ -10,7 +10,7 @@ public protocol CocoaPredicateComparable {
     func toConstantValueForNSPredicate() -> NSCoding
 }
 
-// MARK: - Conformances -
+// MARK: - Conformances
 
 extension Bool: CocoaPredicateComparable {
     public func toConstantValueForNSPredicate() -> NSCoding {

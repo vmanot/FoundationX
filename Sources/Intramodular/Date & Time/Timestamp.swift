@@ -18,7 +18,7 @@ public struct Timestamp {
     }
 }
 
-// MARK: - Conformances -
+// MARK: - Conformances
 
 extension Timestamp: CustomStringConvertible {
     public var description: String {

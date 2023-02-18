@@ -9,7 +9,7 @@ public protocol Precisionable {
     associatedtype Precision
 }
 
-// MARK: - API -
+// MARK: - API
 
 public struct ArbitraryPrecision<T: Precisionable> {
     public let base: T

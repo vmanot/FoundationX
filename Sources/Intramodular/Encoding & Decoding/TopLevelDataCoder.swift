@@ -7,12 +7,12 @@ import Foundation
 import Swallow
 
 /// A type that defines methods for encoding & decoding data.
-public protocol TopLevelDataCoder {
+public protocol TopLevelDataCoder: Sendable {
     func decode<T: Decodable>(_ type: T.Type, from data: Data) throws -> T
     func encode<T: Encodable>(_ value: T) throws -> Data
 }
 
-// MARK: - Implementations -
+// MARK: - Implementations
 
 public struct PropertyListCoder: TopLevelDataCoder {
     private let decoder = PropertyListDecoder()
@@ -61,7 +61,7 @@ extension TopLevelDataCoder where Self == JSONCoder {
     }
 }
 
-// MARK: - Supplementary API -
+// MARK: - Supplementary API
 
 extension TopLevelDataCoder {
     /// Wraps the coder and returns one capable of polymorphic decoding
@@ -70,7 +70,7 @@ extension TopLevelDataCoder {
     }
 }
 
-// MARK: - Auxiliary -
+// MARK: - Auxiliary
 
 /// A wrapper coder that allows for polymorphic decoding.
 public struct _PolymorphicTopLevelDataCoder<Coder: TopLevelDataCoder>: TopLevelDataCoder {

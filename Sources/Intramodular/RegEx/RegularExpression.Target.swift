@@ -44,7 +44,7 @@ extension RegularExpression {
     }
 }
 
-// MARK: - Conformances -
+// MARK: - Conformances
 
 extension RegularExpression.Target: ExpressibleByStringLiteral {
     public typealias StringLiteralType = String
@@ -104,7 +104,7 @@ extension RegularExpression.Target {
     }
 }
 
-// MARK: - API -
+// MARK: - API
 
 extension RegularExpression {
     public func match(_ target: RegularExpression.Target) -> RegularExpression {
@@ -129,7 +129,7 @@ extension RegularExpression {
     }
 }
 
-// MARK: - Helpers -
+// MARK: - Helpers
 
 fileprivate extension String {
     var sanitizedForRegularExpression: String {

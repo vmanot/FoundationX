@@ -145,7 +145,7 @@ extension Version {
     }
 }
 
-// MARK: - Conformances -
+// MARK: - Conformances
 
 extension Version: Codable {
     
@@ -241,7 +241,7 @@ extension Version: Hashable {
     }
 }
 
-// MARK: - Supplementary API -
+// MARK: - Supplementary API
 
 extension Bundle {
     /// The marketing version number of the bundle.

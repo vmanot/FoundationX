@@ -33,7 +33,7 @@ extension RegularExpression {
     }
 }
 
-// MARK: - Implementation -
+// MARK: - Implementation
 
 extension RegularExpression {
     public func matchRanges(in string: String) -> [Range<String.Index>] {
@@ -77,7 +77,7 @@ extension RegularExpression {
     }
 }
 
-// MARK: - API -
+// MARK: - API
 
 extension RegularExpression {
     public static func oneOf(_ expressions: [Self]) -> Self {
@@ -108,7 +108,7 @@ extension RegularExpression {
     }
 }
 
-// MARK: - Conformances -
+// MARK: - Conformances
 
 extension RegularExpression: AdditionOperatable {
     @inlinable
@@ -187,7 +187,7 @@ extension RegularExpression: StringInitiable, StringRepresentable {
     }
 }
 
-// MARK: - API -
+// MARK: - API
 
 infix operator =~: ComparisonPrecedence
 infix operator !~: ComparisonPrecedence

@@ -15,7 +15,7 @@ public struct AnySortDescriptor: Codable, Hashable {
     }
 }
 
-// MARK: - Conformances -
+// MARK: - Conformances
 
 extension AnySortDescriptor: ObjectiveCBridgeable {
     public typealias _ObjectiveCType = NSSortDescriptor

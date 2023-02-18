@@ -65,7 +65,7 @@ extension ComparisonPredicate {
     }
 }
 
-// MARK: - Helpers -
+// MARK: - Helpers
 
 extension NSComparisonPredicate.Modifier {
     init(from modifier: ComparisonPredicate.Modifier) {
@@ -160,7 +160,7 @@ extension ComparisonPredicate: NSPredicateConvertible {
     }
 }
 
-// MARK: - Auxiliary -
+// MARK: - Auxiliary
 
 private extension PredicateExpressionPrimitive {
     var value: Any? {

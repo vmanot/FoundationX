@@ -15,7 +15,7 @@ protocol _PrimitiveKeyValueCodingValue: _KeyValueCodingValue {
     
 }
 
-// MARK: - Implementation -
+// MARK: - Implementation
 
 extension _PrimitiveKeyValueCodingValue {
     static func decode(from coder: KeyValueCoding, forKey key: String) throws -> Self {
@@ -27,7 +27,7 @@ extension _PrimitiveKeyValueCodingValue {
     }
 }
 
-// MARK: - Conditional Conformances -
+// MARK: - Conditional Conformances
 
 extension Optional: _KeyValueCodingValue where Wrapped: _KeyValueCodingValue {
     static func decode(from coder: KeyValueCoding, forKey key: String) throws -> Self {
@@ -47,7 +47,7 @@ extension Optional: _KeyValueCodingValue where Wrapped: _KeyValueCodingValue {
     }
 }
 
-// MARK: - Conformances -
+// MARK: - Conformances
 
 extension Bool: _PrimitiveKeyValueCodingValue {
     

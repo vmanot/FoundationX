@@ -12,7 +12,7 @@ public protocol PredicateExpression: NSExpressionConvertible {
     var comparisonModifier: ComparisonPredicate.Modifier { get }
 }
 
-// MARK: - Implementation -
+// MARK: - Implementation
 
 extension PredicateExpression {
     public var comparisonModifier: ComparisonPredicate.Modifier {
@@ -20,7 +20,7 @@ extension PredicateExpression {
     }
 }
 
-// MARK: - Conformances -
+// MARK: - Conformances
 
 extension KeyPath: PredicateExpression {
     

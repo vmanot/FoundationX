@@ -10,7 +10,7 @@ public protocol KeyValueCoding {
     func removeObject(forKey key: String)
 }
 
-// MARK: - Implementation -
+// MARK: - Implementation
 
 extension KeyValueCoding {
     public func removeObject(forKey key: String) {
@@ -18,7 +18,7 @@ extension KeyValueCoding {
     }
 }
 
-// MARK: - Conformances -
+// MARK: - Conformances
 
 #if canImport(CloudKit)
 

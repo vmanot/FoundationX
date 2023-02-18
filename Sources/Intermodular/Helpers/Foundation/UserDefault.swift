@@ -156,7 +156,7 @@ extension UserDefault {
     }
 }
 
-// MARK: - Auxiliary -
+// MARK: - Auxiliary
 
 /// A type that can be used as a key for encoding and decoding.
 public protocol UserDefaultKey: CodingKey {

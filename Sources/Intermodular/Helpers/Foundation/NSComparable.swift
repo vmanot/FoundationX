@@ -13,7 +13,7 @@ public protocol NSComparableReferenceConvertee: ReferenceConvertee {
     func compare(_ other: ReferenceConvertibleType) -> ComparisonResult
 }
 
-// MARK: - Implementation -
+// MARK: - Implementation
 
 extension NSComparable {
     public static func < (lhs: Self, rhs: Self) -> Bool {

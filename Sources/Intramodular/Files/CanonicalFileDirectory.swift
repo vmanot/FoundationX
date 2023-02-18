@@ -42,7 +42,7 @@ extension CanonicalFileDirectory {
     }
 }
 
-// MARK: - Supplementary API -
+// MARK: - Supplementary API
 
 extension URL {
     public init(directory: CanonicalFileDirectory) throws {

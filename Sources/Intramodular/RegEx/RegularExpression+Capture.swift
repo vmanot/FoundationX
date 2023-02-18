@@ -128,7 +128,7 @@ extension RegularExpression {
     }
 }
 
-// MARK: - Auxiliary -
+// MARK: - Auxiliary
 
 fileprivate extension RegularExpression {
     enum CompoundContainerType {

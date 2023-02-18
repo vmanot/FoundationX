@@ -20,7 +20,7 @@ public protocol HasWeakDelegate: HasDelegate {
     var delegate: Delegate? { get set }
 }
 
-// MARK: - Implementation -
+// MARK: - Implementation
 extension HasDelegate {
     public var delegateType: Delegate.Type {
         return Delegate.self

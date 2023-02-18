@@ -9,7 +9,7 @@ extension RegularExpression {
     public typealias Options = NSRegularExpression.Options
 }
 
-// MARK: - API -
+// MARK: - API
 
 extension RegularExpression {
     public func options(on onOptions: Options, off offOptions: Options) -> Self {

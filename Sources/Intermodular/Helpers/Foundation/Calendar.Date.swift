@@ -52,7 +52,7 @@ extension Calendar {
     }
 }
 
-// MARK: - Conformances -
+// MARK: - Conformances
 
 extension Calendar.Date: CustomStringConvertible {
     public var description: String {
@@ -70,7 +70,7 @@ extension Calendar.Date: LosslessStringConvertible {
     }
 }
 
-// MARK: - Auxiliary -
+// MARK: - Auxiliary
 
 extension Date {
     public init(

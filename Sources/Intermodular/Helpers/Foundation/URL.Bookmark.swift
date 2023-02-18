@@ -117,7 +117,7 @@ extension URL {
     }
 }
 
-// MARK: - Auxiliary -
+// MARK: - Auxiliary
 
 extension URL.Bookmark {
     public enum Error: Swift.Error {
