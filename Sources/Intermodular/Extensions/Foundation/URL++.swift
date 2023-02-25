@@ -78,7 +78,7 @@ extension URL {
 
 extension URL {
     /// A file path component suitable for a base URL to append.
-    public struct PathComponent: Hashable, RawRepresentable {
+    public struct PathComponent: Hashable, RawRepresentable, Sendable {
         public let rawValue: String
 
         public init(rawValue: String) {

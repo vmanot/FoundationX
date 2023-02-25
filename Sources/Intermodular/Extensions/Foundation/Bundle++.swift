@@ -7,7 +7,7 @@ import Foundation
 import Swallow
 
 extension Bundle {
-    public struct ID: Codable, ExpressibleByStringLiteral, Hashable {
+    public struct ID: Codable, ExpressibleByStringLiteral, Hashable, Sendable {
         public let rawValue: String
         
         public init(rawValue: String) {
