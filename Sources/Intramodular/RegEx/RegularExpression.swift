@@ -82,7 +82,7 @@ extension RegularExpression {
 extension RegularExpression {
     public static func oneOf(_ expressions: [Self]) -> Self {
         Self(
-            pattern: expressions.map({ $0.groupIfNecessary().pattern }).separated(by: "|").joined(),
+            pattern: expressions.map({ $0.groupIfNecessary().pattern }).interspersed(with: "|").joined(),
             options: expressions.reduce([], { $0.union($1.options) })
         )
         .groupIfNecessary()

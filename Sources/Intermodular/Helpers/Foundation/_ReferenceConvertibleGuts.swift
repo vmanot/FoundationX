@@ -17,7 +17,7 @@ public struct _ReferenceConvertibleGuts<Base: NSObject & NSCopying> {
     }
 }
 
-public enum Mutable_ReferenceConvertibleGuts<Base: MutableConvertible & NSObject & NSCopying> where Base.MutableRepresentation: NSObject & NSCopying {
+public enum Mutable_ReferenceConvertibleGuts<Base: MutableRepresentationConvertible & NSObject & NSCopying> where Base.MutableRepresentation: NSObject & NSCopying {
     case immutable(Base)
     case mutable(Base.MutableRepresentation)
 

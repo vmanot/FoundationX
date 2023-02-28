@@ -59,7 +59,7 @@ extension RegularExpression {
         in string: String,
         options: NSRegularExpression.MatchingOptions = []
     ) -> [[Substring?]] {
-        captureRanges(in: string, options: options).map({ $0.optionalMap({ string[$0] }) })
+        captureRanges(in: string, options: options).map({ $0.map({ $0.map({ string[$0] }) }) })
     }
     
     public func captureFirstRanges(
@@ -73,7 +73,7 @@ extension RegularExpression {
         in string: String,
         options: NSRegularExpression.MatchingOptions = []
     ) -> [Substring?] {
-        captureFirstRanges(in: string, options: options).optionalMap({ string[$0] })
+        captureFirstRanges(in: string, options: options).map({ $0.map({ string[$0] }) })
     }
     
     public func captureNamedGroups(

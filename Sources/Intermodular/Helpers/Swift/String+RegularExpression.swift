@@ -40,8 +40,12 @@ extension String {
 }
 
 extension String {
-    public func matchAndCaptureSubstrings(with expression: RegularExpression) -> [(Substring, [Substring?])] {
-        matchAndCaptureRanges(with: expression).map({ (self[$0.0], $0.1.optionalMap({ self[$0] })) })
+    public func matchAndCaptureSubstrings(
+        with expression: RegularExpression
+    ) -> [(Substring, [Substring?])] {
+        matchAndCaptureRanges(with: expression).map {
+            (self[$0.0], $0.1.map({ $0.map({ self[$0] }) }))
+        }
     }
     
     public func substrings(matchedBy expression: RegularExpression) -> [Substring] {
@@ -53,15 +57,15 @@ extension String {
     }
     
     public func strings(capturedBy expression: RegularExpression) -> [[Substring?]] {
-        captureRanges(with: expression).map({ $0.optionalMap({ self[$0] }) })
+        captureRanges(with: expression).map({ $0.map({ $0.map({ self[$0] }) }) })
     }
     
     public func substrings(firstCapturedBy expression: RegularExpression) -> [Substring?] {
-        captureFirstRanges(with: expression).optionalMap({ self[$0] })
+        captureFirstRanges(with: expression).map({ $0.map({ self[$0] }) })
     }
     
     public func strings(firstCapturedBy expression: RegularExpression) -> [String?] {
-        substrings(firstCapturedBy: expression).optionalMap(String.init)
+        substrings(firstCapturedBy: expression).map({ $0.map(String.init) })
     }
 }
 
@@ -99,33 +103,33 @@ extension String {
     ) {
         replaceSubranges(substrings.lazy.map({ $0.bounds }), with: replacements)
     }
-
+    
     public mutating func mutateStrings(
         matchedBy expression: RegularExpression,
         _ mutate: ((_ string: inout String, _ relativeMatches: [Substring?]) -> Void)
     ) {
         let matches = matchAndCaptureSubstrings(with: expression)
         var replacements: [String] = []
-
+        
         for (matchedSubstring, capturedSubstrings) in matches {
             var matchedString = String(matchedSubstring)
-
+            
             let relativeCapturedStrings = capturedSubstrings
                 .map({ substring -> Range<String.Index>? in
                     guard let substring = substring else {
                         return nil
                     }
-
+                    
                     guard !substring.isEmpty else {
                         fatalError()
                     }
-
+                    
                     let relativeLowerBoundDistance = matchedSubstring.distance(from: matchedSubstring.startIndex, to: substring.startIndex)
                     let relativeUpperBoundDistance = matchedSubstring.distance(from: matchedSubstring.startIndex, to: substring.endIndex)
-
+                    
                     let lowerBound = matchedString.index(matchedString.startIndex, offsetBy: relativeLowerBoundDistance)
                     let upperBound = matchedString.index(matchedString.startIndex, offsetBy: relativeUpperBoundDistance)
-
+                    
                     return lowerBound..<upperBound
                 })
                 .map {
@@ -133,15 +137,15 @@ extension String {
                         return matchedString[range]
                     }
                 }
-
+            
             mutate(&matchedString, relativeCapturedStrings)
-
+            
             replacements.append(matchedString)
         }
-
+        
         replaceSubstrings(matches.lazy.map({ $0.0 }), with: replacements)
     }
-
+    
     public mutating func replaceLines(matching expression: RegularExpression, with replacement: String) {
         replace(substrings: self.lines().filter({ $0.matches(expression) }), with: replacement)
     }
