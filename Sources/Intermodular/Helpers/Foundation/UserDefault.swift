@@ -198,5 +198,4 @@ extension AppStorage {
         self.init(wrappedValue: wrappedValue, key.stringValue, store: store)
     }
 }
-
 #endif

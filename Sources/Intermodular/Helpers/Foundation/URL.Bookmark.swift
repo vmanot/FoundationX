@@ -7,7 +7,7 @@ import Swallow
 
 extension URL {
     /// A type representing URL bookmark data.
-    public struct Bookmark: Hashable {
+    public struct Bookmark: Hashable, Sendable {
         private let data: Data
         private let creationOptions: URL.BookmarkCreationOptions
         
