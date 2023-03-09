@@ -9,21 +9,26 @@ import Swallow
 ///
 /// Written to improve API ergonomics.
 public enum CanonicalFileDirectory {
+    case applicationSupportFiles
     case iCloudDriveDocuments(ubiquityContainerIdentifier: String)
     case securityApplicationGroup(String)
     case ubiquityContainer(String)
     case userDocuments
     
     public func toURL() throws -> URL {
+        let fileManager = FileManager.default
+        
         switch self {
+            case .applicationSupportFiles:
+                return try fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
             case .iCloudDriveDocuments(let identifier):
-                return try FileManager.default.url(forUbiquityContainerIdentifier: identifier).unwrap().appendingDirectoryPathComponent("Documents")
+                return try fileManager.url(forUbiquityContainerIdentifier: identifier).unwrap().appendingDirectoryPathComponent("Documents")
             case .securityApplicationGroup(let identifier):
-                return try FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: identifier).unwrap()
+                return try fileManager.containerURL(forSecurityApplicationGroupIdentifier: identifier).unwrap()
             case .ubiquityContainer(let identifier):
-                return try FileManager.default.url(forUbiquityContainerIdentifier: identifier).unwrap()
+                return try fileManager.url(forUbiquityContainerIdentifier: identifier).unwrap()
             case .userDocuments:
-                return try FileManager.default.url(for: .documentDirectory, in: .userDomainMask)
+                return try fileManager.url(for: .documentDirectory, in: .userDomainMask)
         }
     }
 }
