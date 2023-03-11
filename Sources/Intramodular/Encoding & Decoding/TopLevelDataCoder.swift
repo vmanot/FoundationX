@@ -46,6 +46,14 @@ public struct JSONCoder: TopLevelDataCoder {
         self.init(decoder: .init(), encoder: .init())
     }
     
+    public init(outputFormatting: JSONEncoder.OutputFormatting) {
+        let encoder = JSONEncoder()
+        
+        encoder.outputFormatting = outputFormatting
+        
+        self.init(decoder: .init(), encoder: encoder)
+    }
+    
     public func decode<T: Decodable>(_ type: T.Type, from data: Data) throws -> T {
         try decoder.decode(type, from: data)
     }
@@ -58,6 +66,10 @@ public struct JSONCoder: TopLevelDataCoder {
 extension TopLevelDataCoder where Self == JSONCoder {
     public static var json: JSONCoder {
         JSONCoder()
+    }
+    
+    public static func json(outputFormatting: JSONEncoder.OutputFormatting) -> JSONCoder {
+        JSONCoder(outputFormatting: outputFormatting)
     }
 }
 
