@@ -9,6 +9,7 @@ import Swallow
 ///
 /// Written to improve API ergonomics.
 public enum CanonicalFileDirectory {
+    case desktop
     case applicationSupportFiles
     case iCloudDriveDocuments(ubiquityContainerIdentifier: String)
     case securityApplicationGroup(String)
@@ -19,6 +20,8 @@ public enum CanonicalFileDirectory {
         let fileManager = FileManager.default
         
         switch self {
+            case .desktop:
+                return try fileManager.url(for: .desktopDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
             case .applicationSupportFiles:
                 return try fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
             case .iCloudDriveDocuments(let identifier):
