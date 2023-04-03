@@ -29,6 +29,12 @@ extension NSMutableArray: DestructivelyMutableSequence {
             }
         }
     }
+    
+    public func removeAll(where predicate: ((Element) throws -> Bool)) rethrows {
+        var _self = self
+        
+        try _self._removeAll(where: predicate)
+    }
 }
 
 extension NSMutableData: MutableSequence {
@@ -58,5 +64,11 @@ extension NSMutableSet: DestructivelyMutableSequence {
                 add(newElement)
             }
         }
+    }
+    
+    public func removeAll(where predicate: ((Element) throws -> Bool)) rethrows {
+        var _self = self
+        
+        try _self._removeAll(where: predicate)
     }
 }
