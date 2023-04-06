@@ -55,7 +55,7 @@ public struct JSONCoder: TopLevelDataCoder {
     }
     
     public func decode<T: Decodable>(_ type: T.Type, from data: Data) throws -> T {
-        try decoder.decode(type, from: data)
+        try decoder.decode(type, from: data, allowFragments: true)
     }
     
     public func encode<T: Encodable>(_ value: T) throws -> Data {

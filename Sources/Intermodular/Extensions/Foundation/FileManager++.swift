@@ -143,8 +143,41 @@ extension FileManager {
 }
 
 extension FileManager {
+    public func parentDirectory(for url: URL) -> URL {
+        let result = url.deletingLastPathComponent()
+        
+        assert(result.hasDirectoryPath)
+        
+        return result
+    }
+    
+    public func createFile(
+        at url: URL,
+        contents: Data,
+        attributes: [FileAttributeKey: Any]? = nil,
+        withIntermediateDirectories: Bool = true
+    ) throws {
+        if withIntermediateDirectories {
+            try createDirectoryIfNecessary(at: parentDirectory(for: url))
+        }
+        
+        try contents.write(to: url, options: .atomic)
+        
+        if let attributes {
+            try setAttributes(attributes, ofItemAtPath: url.path)
+        }
+    }
+
     public func contents(of url: URL) throws -> Data {
         try contents(atPath: url.path).unwrap()
+    }
+    
+    public func contentsIfFileExists(of url: URL) throws -> Data? {
+        guard fileExists(at: url) else {
+            return nil
+        }
+        
+        return try contents(of: url)
     }
 
     public func contentsOfDirectory(at url: URL) throws -> [URL] {
