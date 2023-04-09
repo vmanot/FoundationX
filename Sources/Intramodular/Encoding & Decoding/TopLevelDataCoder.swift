@@ -12,7 +12,7 @@ public protocol TopLevelDataCoder: Sendable {
     func encode<T: Encodable>(_ value: T) throws -> Data
 }
 
-// MARK: - Implementations
+// MARK: - Conforming Implementations
 
 public struct PropertyListCoder: TopLevelDataCoder {
     private let decoder = PropertyListDecoder()
