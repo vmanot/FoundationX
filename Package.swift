@@ -1,4 +1,4 @@
-// swift-tools-version:5.6
+// swift-tools-version:5.7
 
 import PackageDescription
 
@@ -11,7 +11,12 @@ let package = Package(
         .watchOS(.v6)
     ],
     products: [
-        .library(name: "FoundationX", targets: ["FoundationX"])
+        .library(
+            name: "FoundationX",
+            targets: [
+                "FoundationX"
+            ]
+        )
     ],
     dependencies: [
         .package(url: "https://github.com/vmanot/Swallow.git", branch: "master")
@@ -19,7 +24,9 @@ let package = Package(
     targets: [
         .target(
             name: "FoundationX",
-            dependencies: ["Swallow"],
+            dependencies: [
+                "Swallow"
+            ],
             path: "Sources"
         )
     ]
