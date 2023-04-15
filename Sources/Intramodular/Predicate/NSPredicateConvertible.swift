@@ -19,7 +19,7 @@ public protocol NSPredicateConvertible {
     func toNSPredicate(context: NSPredicateConversionContext) throws -> NSPredicate
 }
 
-// MARK: - Conforming Implementations
+// MARK: - Implemented Conformances
 
 extension NSPredicate: NSPredicateConvertible {
     public func toNSPredicate(context: NSPredicateConversionContext) throws -> NSPredicate {

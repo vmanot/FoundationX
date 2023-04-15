@@ -58,9 +58,11 @@ public class _DirectoryEnumerator: IteratorProtocol {
 public struct _AsyncDirectoryIterator: AsyncIteratorProtocol {
     private var iterator: _DeferredAsyncIterator<AnyAsyncIterator<Result<URL, Error>>>
     
-    public init(url: URL) {
+    public init(directoryURL: URL) {
         self.iterator = _DeferredAsyncIterator {
-            AnyAsyncIterator(_DirectoryEnumerator(directoryURL: url)!)
+            let enumerator = try _DirectoryEnumerator(directoryURL: directoryURL).unwrap()
+            
+            return AnyAsyncIterator(enumerator)
         }
     }
     
