@@ -104,6 +104,15 @@ extension String {
         replaceSubranges(substrings.lazy.map({ $0.bounds }), with: replacements)
     }
     
+    public func replacingSubstrings(
+        _ substrings: [Substring],
+        with replacements: [String]
+    ) -> Self {
+        build(self) {
+            $0.replaceSubstrings(substrings, with: replacements)
+        }
+    }
+    
     public mutating func mutateStrings(
         matchedBy expression: RegularExpression,
         _ mutate: ((_ string: inout String, _ relativeMatches: [Substring?]) -> Void)
@@ -146,11 +155,16 @@ extension String {
         replaceSubstrings(matches.lazy.map({ $0.0 }), with: replacements)
     }
     
-    public mutating func replaceLines(matching expression: RegularExpression, with replacement: String) {
+    public mutating func replaceLines(
+        matching expression: RegularExpression,
+        with replacement: String
+    ) {
         replace(substrings: self.lines().filter({ $0.matches(expression) }), with: replacement)
     }
     
-    public mutating func removeLines(matching expression: RegularExpression) {
+    public mutating func removeLines(
+        matching expression: RegularExpression
+    ) {
         replaceLines(matching: expression, with: "")
     }
 }
