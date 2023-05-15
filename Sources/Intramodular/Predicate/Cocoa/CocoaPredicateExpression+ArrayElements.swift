@@ -14,7 +14,7 @@ enum ArrayElementKeyPathType: Equatable {
     case none
 }
 
-public struct ArrayElementKeyPathPredicateExpression<ArrayExpression, Value>: PredicateExpression where ArrayExpression: PredicateExpression, ArrayExpression.Value: AnyArrayOrSet {
+public struct ArrayElementKeyPathPredicateExpression<ArrayExpression, Value>: CocoaPredicateExpression where ArrayExpression: CocoaPredicateExpression, ArrayExpression.Value: AnyArrayOrSet {
     public typealias Root = ArrayExpression.Root
     public typealias Element = ArrayExpression.Value.Element
     
@@ -22,7 +22,7 @@ public struct ArrayElementKeyPathPredicateExpression<ArrayExpression, Value>: Pr
     let array: ArrayExpression
     let elementKeyPath: AnyKeyPath
     
-    public var comparisonModifier: ComparisonPredicate.Modifier {
+    public var _desiredComparisonModifier: CocoaComparisonPredicate.Modifier {
         switch type {
             case .first, .last, .index:
                 return .direct

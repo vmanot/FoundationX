@@ -6,12 +6,12 @@ import Foundation
 import Swallow
 
 /// A type-safe set of conditions used to filter a list of objects of type `Root`.
-public indirect enum Predicate<Root>: NSPredicateConvertible {
-    case comparison(ComparisonPredicate)
+public indirect enum CocoaPredicate<Root>: NSPredicateConvertible {
+    case comparison(CocoaComparisonPredicate)
     case boolean(Bool)
-    case and(Predicate<Root>, Predicate<Root>)
-    case or(Predicate<Root>, Predicate<Root>)
-    case not(Predicate<Root>)
+    case and(CocoaPredicate<Root>, CocoaPredicate<Root>)
+    case or(CocoaPredicate<Root>, CocoaPredicate<Root>)
+    case not(CocoaPredicate<Root>)
     
     case cocoa(NSPredicate)
 }
@@ -23,7 +23,7 @@ public struct AnyPredicate: NSPredicateConvertible {
         self.base = predicate
     }
     
-    public init<Root>(_ predicate: Predicate<Root>) {
+    public init<Root>(_ predicate: CocoaPredicate<Root>) {
         self.base = predicate
     }
     
@@ -33,9 +33,9 @@ public struct AnyPredicate: NSPredicateConvertible {
 }
 
 public enum ComparisonPredicationExpressionTransform<
-    Input: PredicateExpression,
+    Input: CocoaPredicateExpression,
     Output
->: PredicateExpression where Input.Value: AnyArrayOrSet {
+>: CocoaPredicateExpression where Input.Value: AnyArrayOrSet {
     public typealias Root = Input.Root
     public typealias Value = Output
     
@@ -48,31 +48,31 @@ public enum ComparisonPredicationExpressionTransform<
     case size(Input)
 }
 
-public struct QueryPredicateExpression<Root, Subject: AnyArrayOrSet>: PredicateExpression {
+public struct QueryPredicateExpression<Root, Subject: AnyArrayOrSet>: CocoaPredicateExpression {
     public typealias Value = Subject
     
     let key: AnyKeyPath
-    let predicate: Predicate<Subject.Element>
+    let predicate: CocoaPredicate<Subject.Element>
 }
 
 // MARK: - Compound Predicates
 
-public func && <T> (lhs: Predicate<T>, rhs: Predicate<T>) -> Predicate<T> {
+public func && <T> (lhs: CocoaPredicate<T>, rhs: CocoaPredicate<T>) -> CocoaPredicate<T> {
     .and(lhs, rhs)
 }
 
-public func || <T> (lhs: Predicate<T>, rhs: Predicate<T>) -> Predicate<T> {
+public func || <T> (lhs: CocoaPredicate<T>, rhs: CocoaPredicate<T>) -> CocoaPredicate<T> {
     .or(lhs, rhs)
 }
 
-public prefix func ! <T> (predicate: Predicate<T>) -> Predicate<T> {
+public prefix func ! <T> (predicate: CocoaPredicate<T>) -> CocoaPredicate<T> {
     .not(predicate)
 }
 
 
 // MARK: - Aggregate Operations
 
-extension PredicateExpression where Value: AnyArrayOrSet {
+extension CocoaPredicateExpression where Value: AnyArrayOrSet {
     public var all: ArrayElementKeyPathPredicateExpression<Self, Value.Element> {
         all(\Value.Element.self)
     }
@@ -98,14 +98,14 @@ extension PredicateExpression where Value: AnyArrayOrSet {
     }
 }
 
-extension PredicateExpression where Value: PredicateExpressionPrimitive {
-    public func `in`(_ list: Value...) -> Predicate<Root> {
+extension CocoaPredicateExpression where Value: PredicateExpressionPrimitive {
+    public func `in`(_ list: Value...) -> CocoaPredicate<Root> {
         .comparison(.init(self, .in, list))
     }
 }
 
-extension PredicateExpression where Value == String {
-    public func `in`(_ list: [Value], _ options: ComparisonPredicate.Options = .caseInsensitive) -> Predicate<Root> {
+extension CocoaPredicateExpression where Value == String {
+    public func `in`(_ list: [Value], _ options: CocoaComparisonPredicate.Options = .caseInsensitive) -> CocoaPredicate<Root> {
         .comparison(.init(self, .in, list, options))
     }
 }
@@ -127,13 +127,13 @@ extension PredicateExpression where Value == String {
 ///
 ///       (\Account.name).contains("Account") && all(\.profiles, where: (\Profile.name).contains("Doe")).size == 2)
 ///
-public func all<T, U: AnyArrayOrSet>(_ keyPath: KeyPath<T, U>, where predicate: Predicate<U.Element>) -> QueryPredicateExpression<T, U> {
+public func all<T, U: AnyArrayOrSet>(_ keyPath: KeyPath<T, U>, where predicate: CocoaPredicate<U.Element>) -> QueryPredicateExpression<T, U> {
     .init(key: keyPath, predicate: predicate)
 }
 
 // MARK: - Boolean predicates
 
-extension Predicate: ExpressibleByBooleanLiteral {
+extension CocoaPredicate: ExpressibleByBooleanLiteral {
     public init(booleanLiteral value: Bool) {
         self = .boolean(value)
     }

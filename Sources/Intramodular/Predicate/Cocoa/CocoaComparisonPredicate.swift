@@ -5,7 +5,7 @@
 import Foundation
 import Swallow
 
-public struct ComparisonPredicate {
+public struct CocoaComparisonPredicate {
     public enum Operator: Codable {
         case lessThan
         case lessThanOrEqual
@@ -43,20 +43,20 @@ public struct ComparisonPredicate {
     
     public let expression: AnyPredicateExpression
     public let `operator`: Operator
-    public let options: ComparisonPredicate.Options
+    public let options: CocoaComparisonPredicate.Options
     public let value: PredicateExpressionPrimitive
     
     public var modifier: Modifier {
-        expression.comparisonModifier
+        expression._desiredComparisonModifier
     }
 }
 
-extension ComparisonPredicate {
-    init<E: PredicateExpression>(
+extension CocoaComparisonPredicate {
+    init<E: CocoaPredicateExpression>(
         _ expression: E,
-        _ `operator`: ComparisonPredicate.Operator,
+        _ `operator`: CocoaComparisonPredicate.Operator,
         _ value: PredicateExpressionPrimitive,
-        _ options: ComparisonPredicate.Options = .caseInsensitive
+        _ options: CocoaComparisonPredicate.Options = .caseInsensitive
     ) {
         self.expression = AnyPredicateExpression(expression)
         self.operator = `operator`
@@ -68,7 +68,7 @@ extension ComparisonPredicate {
 // MARK: - Helpers
 
 extension NSComparisonPredicate.Modifier {
-    init(from modifier: ComparisonPredicate.Modifier) {
+    init(from modifier: CocoaComparisonPredicate.Modifier) {
         switch modifier {
             case .direct:
                 self = .direct
@@ -83,7 +83,7 @@ extension NSComparisonPredicate.Modifier {
 }
 
 extension NSComparisonPredicate.Operator {
-    init(from operator: ComparisonPredicate.Operator) {
+    init(from operator: CocoaComparisonPredicate.Operator) {
         switch `operator` {
             case .beginsWith:
                 self = .beginsWith
@@ -116,7 +116,7 @@ extension NSComparisonPredicate.Operator {
 }
 
 extension NSComparisonPredicate.Options {
-    init(from options: ComparisonPredicate.Options) {
+    init(from options: CocoaComparisonPredicate.Options) {
         self.init()
         
         if options.contains(.caseInsensitive) {
@@ -133,7 +133,7 @@ extension NSComparisonPredicate.Options {
     }
 }
 
-extension ComparisonPredicate: NSPredicateConvertible {
+extension CocoaComparisonPredicate: NSPredicateConvertible {
     public func toNSPredicate(context: NSPredicateConversionContext) throws -> NSPredicate {
         switch modifier {
             case .direct, .any, .all:

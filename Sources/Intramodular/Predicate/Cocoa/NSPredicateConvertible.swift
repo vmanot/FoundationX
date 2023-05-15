@@ -27,7 +27,7 @@ extension NSPredicate: NSPredicateConvertible {
     }
 }
 
-extension Predicate {
+extension CocoaPredicate {
     public func toNSPredicate(context: NSPredicateConversionContext) throws -> NSPredicate {
         switch self {
             case let .comparison(comparison):

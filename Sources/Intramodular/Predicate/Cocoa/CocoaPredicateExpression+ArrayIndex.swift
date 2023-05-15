@@ -5,7 +5,7 @@
 import Foundation
 import Swallow
 
-public enum ArrayIndexPredicateExpression<ArrayExpression: PredicateExpression>: PredicateExpression where ArrayExpression.Value: AnyArray {
+public enum ArrayIndexPredicateExpression<ArrayExpression: CocoaPredicateExpression>: CocoaPredicateExpression where ArrayExpression.Value: AnyArray {
     public typealias Root = ArrayExpression.Root
     public typealias Value = ArrayExpression.Value.ArrayElement
     

@@ -5,7 +5,7 @@
 import Foundation
 import Swift
 
-extension PredicateExpression where Value: AnyArray {
+extension CocoaPredicateExpression where Value: AnyArray {
     public func at(index: Int) -> ArrayIndexPredicateExpression<Self> {
         .index(self, index)
     }
@@ -31,7 +31,7 @@ extension PredicateExpression where Value: AnyArray {
     }
 }
 
-extension PredicateExpression where Value: AnyArrayOrSet {
+extension CocoaPredicateExpression where Value: AnyArrayOrSet {
     public var size: ComparisonPredicationExpressionTransform<Self, Int> {
         .size(self)
     }
@@ -41,7 +41,7 @@ extension PredicateExpression where Value: AnyArrayOrSet {
     }
 }
 
-extension PredicateExpression where Value: AnyArrayOrSet & AdditiveCollection {
+extension CocoaPredicateExpression where Value: AnyArrayOrSet & AdditiveCollection {
     public var average: ComparisonPredicationExpressionTransform<Self, Value.AdditiveElement> {
         .average(self)
     }
@@ -55,7 +55,7 @@ extension PredicateExpression where Value: AnyArrayOrSet & AdditiveCollection {
     }
 }
 
-extension PredicateExpression where Value: AnyArrayOrSet & ComparableCollection {
+extension CocoaPredicateExpression where Value: AnyArrayOrSet & ComparableCollection {
     public var min: ComparisonPredicationExpressionTransform<Self, Value.ComparableElement> {
         .min(self)
     }

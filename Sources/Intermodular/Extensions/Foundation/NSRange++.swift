@@ -5,18 +5,13 @@
 import Foundation
 import Swallow
 
-extension NSRange {
-    public init(_ index: Int) {
-        self.init(location: index, length: 1)
-    }
-    
+extension NSRange {        
     @inlinable
-    public init<C: Collection>(of collection: C)  {
-        self.init(location: 0, length: collection.length)
-    }
-    
-    @inlinable
-    public init<R: RangeExpression>(_ range: R, lowerBound: Int = 0, upperBound: Int) where R.Bound: FixedWidthInteger {
+    public init<R: RangeExpression>(
+        _ range: R,
+        lowerBound: Int = 0,
+        upperBound: Int
+    ) where R.Bound: FixedWidthInteger {
         self.init(range.relative(to: R.Bound(lowerBound)..<R.Bound(upperBound)))
     }
     

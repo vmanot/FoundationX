@@ -19,7 +19,11 @@ public struct SortCriterion<T> {
     let order: Order
     let comparator: Comparator?
     
-    init(property: PartialKeyPath<T>, order: Order = .ascending, comparator: Comparator? = nil) {
+    init(
+        property: PartialKeyPath<T>,
+        order: Order = .ascending,
+        comparator: Comparator? = nil
+    ) {
         self.property = property
         self.order = order
         self.comparator = comparator
